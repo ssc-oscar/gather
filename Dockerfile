@@ -36,9 +36,10 @@ RUN if [ ! -d /var/run/sshd ]; then mkdir /var/run/sshd; chmod 0755 /var/run/ssh
 
 COPY init.sh startsvc.sh startshell.sh notebook.sh startDef.sh /bin/ 
 
-ENV NB_USER jovyan
-ENV NB_UID 1000
+ENV NB_USER audris
+ENV NB_UID 50954
 ENV HOME /home/$NB_USER
 RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER && mkdir $HOME/.ssh && chown -R $NB_USER:users $HOME 
 COPY id_rsa_gcloud.pub $HOME/.ssh/authorized_keys
+COPY run.sh *.py /home/audris 
 RUN chown -R $NB_USER:users $HOME && chmod -R og-rwx $HOME/.ssh
