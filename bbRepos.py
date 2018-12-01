@@ -8,7 +8,7 @@ jsonDict = {}
 #url = 'https://api.bitbucket.org/2.0/repositories/?pagelen=100&before='+sys.argv[2]+'&after='+sys.argv[1]
 url = 'https://api.bitbucket.org/2.0/repositories/?pagelen=100&after='+sys.argv[1]
 
-client = pymongo.MongoClient (host="da1.eecs.utk.edu")
+client = pymongo.MongoClient ()
 dbname = sys .argv[2]
 # Get a reference to a particular database
 db = client [dbname]
