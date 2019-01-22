@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 import re, itertools, os, pymongo, sys
 
 # DB info
-client = pymongo.MongoClient()
+client = pymongo.MongoClient(host='da1')
 dbname = sys.argv[1] # expects db name as first argument
 collName = sys.argv[2] # expect collection name as second arg
 db = client[dbname]
@@ -57,7 +57,7 @@ def get(page):
 
 # Driver loop to get all 172 site mappings
 # Number of mappings found at https://sourceforge.net/sitemap.xml
-for i in range(0, 1):
+for i in range(0, 173):
     get(i)
 
 # Insert all projects into collection

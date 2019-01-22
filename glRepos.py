@@ -10,7 +10,7 @@ import requests
 begin = sys.argv[1] # beginning page index from first arg
 
 # DB info
-client = pymongo.MongoClient()
+client = pymongo.MongoClient(host='da1')
 dbname = sys.argv[2] # expects db name as second arg
 collName = sys.argv[3] # expects collection name as third arg
 db = client[dbname]

@@ -4,7 +4,7 @@ import requests
 
 jsonDict = {}
 
-client = pymongo.MongoClient ()
+client = pymongo.MongoClient (host='da1')
 # Get a reference to a particular database
 args = list(sys.argv)
 args.pop (0)
