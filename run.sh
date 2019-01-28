@@ -23,6 +23,8 @@ python3 extractSfGit.py sf201813 repos &
 
 python3 	glRepos.py 1 gl201813 repos &
 
+#other forges
+
 wait
 
 #${un[$i]} ${ps[$i]} 
