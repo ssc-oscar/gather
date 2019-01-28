@@ -23,8 +23,18 @@ python3 extractSfGit.py sf201813 repos &
 
 python3 	glRepos.py 1 gl201813 repos &
 
-#other forges
-
+#other forges git.bioconductor.org, 
+# https://gitlab.gnome.org/explore 
+# https://android.googlesource.com/
+# https://cgit.drupalcode.org/
+# https://cgit.kde.org/
+# https://git.zx2c4.com/cgit
+# android.git.kernel.org
+# http://git.eclipse.org/
+# git.postgresql.org
+# repo.or.cz
+# git.kernel.org
+#  git.savannah.gnu git.debian.org
 wait
 
 #${un[$i]} ${ps[$i]} 
