@@ -57,6 +57,19 @@ cat bioconductor.org | \
 while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; 
 done | gzip > bioconductor.org.heads &
 
+wget "https://repo.or.cz/?a=project_list" -O cz.html
+grep '\.git' cz.html  | sed 's|.*"/\([^/"]*\.git\).*|\1|' | uniq | sort -u | awk '{print "https://repo.or.cz/"$1}'> repo.or.cz
+cat repo.or.cz | \
+while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; 
+done | gzip > repo.or.cz.heads &
+
+wget https://cgit.kde.org/ -O kde.html
+grep '\.git' kde.html  |  sed "s|.*href='/\([^']*\.git\).*|\1|" | \
+   uniq | sort -u | awk '{print "https://anongit.kde.org/"$1}'> cgit.kde.org
+cat cgit.kde.org | \
+while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; 
+done | gzip > cgit.kde.org.heads &
+
 # https://gitlab.gnome.org/explore 
 # https://android.googlesource.com/
 # https://cgit.drupalcode.org/
@@ -65,7 +78,6 @@ done | gzip > bioconductor.org.heads &
 # android.git.kernel.org
 # http://git.eclipse.org/
 # git.postgresql.org
-# repo.or.cz
 # git.kernel.org
 #  git.savannah.gnu git.debian.org
 wait
