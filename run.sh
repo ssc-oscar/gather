@@ -73,7 +73,6 @@ done | gzip > cgit.kde.org.heads &
 # https://gitlab.gnome.org/explore 
 # https://android.googlesource.com/
 # https://cgit.drupalcode.org/
-# https://cgit.kde.org/
 # https://git.zx2c4.com/cgit
 # android.git.kernel.org
 # http://git.eclipse.org/
