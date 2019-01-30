@@ -46,13 +46,16 @@ done
 
 python3 bbRepos.py 1980-01-01 bitbucket201813 &> bbRepos201813.out &
 
-(python3 sfRepos.py sf201813 repos; python3 extractSfGit.py sf201813 repos) &
+(python3 sfRepos.py sf201813 repos &> sf201813.out; python3 extractSfGit.py sf201813 repos &>> sf201813.out) &
 
-python3 	glRepos.py 1 gl201813 repos &
+python3 	glRepos.py 1 gl201813 repos &> gl201813.out &
 
 #other forges git.bioconductor.org, 
 wget http://git.bioconductor.org -O bio.html
 cat bio.html | awk '{print $2}' | grep / | grep -v '\*' | awk '{ print "https://git.bioconductor.org/"$1}'> fatal: repository 'https://git.code.sf.net/p/perlcaster/git/' not found
+cat bioconductor.org | \
+while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; 
+done | gzip > bioconductor.org.heads &
 
 # https://gitlab.gnome.org/explore 
 # https://android.googlesource.com/
