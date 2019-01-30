@@ -51,6 +51,9 @@ python3 bbRepos.py 1980-01-01 bitbucket201813 &> bbRepos201813.out &
 python3 	glRepos.py 1 gl201813 repos &
 
 #other forges git.bioconductor.org, 
+wget http://git.bioconductor.org -O bio.html
+cat bio.html | awk '{print $2}' | grep / | grep -v '\*' | awk '{ print "https://git.bioconductor.org/"$1}'> fatal: repository 'https://git.code.sf.net/p/perlcaster/git/' not found
+
 # https://gitlab.gnome.org/explore 
 # https://android.googlesource.com/
 # https://cgit.drupalcode.org/
