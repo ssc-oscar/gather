@@ -1,4 +1,4 @@
- 	glRepos.py#!/bin/bash
+#!/bin/bash
 
 if [[ 'a' == 'b' ]];
 then
