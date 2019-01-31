@@ -86,4 +86,13 @@ cat  gl201813.new | \
 while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; 
 done | gzip > gl201813.new.heads &
 
+python3 listU.py ghReposList201813 repos '{ "fork" : false }' html_url | sed "s|^b'||;s|'$||" > ghReposList201813.nofork
+split -n l/9 -da1 ghReposList201813.nofork. ghReposList201813.nofork
+for j in {0..8}
+do sed 's|https://github.com/|gh:|' ghReposList201813.nofork.$j | while read r; do
+    a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a | sed 's/ //g';
+  done | gzip > ghReposList201813.nofork.$j.heads &
+done
+wait
+
 #${un[$i]} ${ps[$i]} 
