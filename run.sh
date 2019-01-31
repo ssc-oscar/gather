@@ -80,5 +80,10 @@ done | gzip > cgit.kde.org.heads &
 # git.kernel.org
 #  git.savannah.gnu git.debian.org
 wait
+python3 listU.py gl201813 repos '{ "last_activity_at" : { "$gt" : "2018-11-01" }}' http_url_to_repo | sed "s|^b'||;s|'$||" > gl201813.new)&
+
+cat  gl201813.new | \
+while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; 
+done | gzip > gl201813.new.heads &
 
 #${un[$i]} ${ps[$i]} 
