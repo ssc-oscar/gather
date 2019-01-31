@@ -1,3 +1,7 @@
+'''
+Script used to extract git urls of sourceforge projects
+Uses the 'git ls-remote' command to test if a repo exists
+'''
 import pymongo
 import sys
 import json
@@ -13,11 +17,14 @@ collName = sys.argv[2] # expect collection name as second arg
 db = client[dbname]
 coll = db[collName]
 
-gitBase = 'https://git.code.sf.net/p/{}/{}/'
-params = ['git', 'ls-remote']
-last_object = ObjectId("5c2f59fd256eee0016f01e8b")
-cursor = coll.find({"git": None, "_id": {"$gt": last_object}}, no_cursor_timeout=True)
+gitBase = 'https://git.code.sf.net/p/{}/{}/' # base url
+params = ['git', 'ls-remote'] # subprocess parameters
+# last_object = ObjectId("5c2f59fd256eee0016f01e8b") # used for script crashes
 
+# the query itself (currently uses the last object when script crashed)
+cursor = coll.find({"git": None}), no_cursor_timeout=True)
+
+# traverse database and attempt 'git ls-remote' on two options (code vs. git)
 for doc in cursor:
 	proj = re.search('projects\/(.+)', doc['url']).group(1)
 	bases = [gitBase.format(proj, 'git'), gitBase.format(proj, 'code')]
@@ -29,5 +36,5 @@ for doc in cursor:
 			coll.update_one({'_id': doc['_id']}, {'$set': {'http_url_to_repo': base}}, upsert=False)
 		except subprocess.CalledProcessError as err:
 			continue
-
+# close the cursor since we set it to no timeout
 cursor.close()	
