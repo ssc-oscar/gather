@@ -1,0 +1,17 @@
+host bb
+        User audrism
+        HostName bitbucket.org
+        IdentitiesOnly yes
+        IdentityFile ~/.ssh/id_rsagithub
+
+host gh
+    User git
+    HostName github.com
+    IdentitiesOnly yes
+    IdentityFile ~/.ssh/id_rsagithub
+
+host gl
+    User git
+    HostName gitlab.com
+    IdentitiesOnly yes
+    IdentityFile ~/.ssh/id_rsagithub
