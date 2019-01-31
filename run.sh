@@ -93,6 +93,18 @@ do sed 's|https://github.com/|gh:|' ghReposList201813.nofork.$j | while read r; 
     a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a | sed 's/ //g';
   done | gzip > ghReposList201813.nofork.$j.heads &
 done
+
+python3 listU.py bitbucket201813 repos '{ "updated_at" : { "$gt" : "2018-11-01" } }' full_name | \
+  sed "s|^b'||;s|'$||" | sort -u > bitbucket201813.new
+split -n l/9 -da1 bitbucket201813.new. bitbucket201813.new
+for j in {0..8}
+do cat bitbucket201813.new.$j | while read r; do
+    a=$(git ls-remote bb:$r | awk '{print ";"$1}'); echo bb:$r$a | sed 's/ //g';
+  done | gzip > bitbucket201813.new.$j.heads &
+done
+
 wait
+
+
 
 #${un[$i]} ${ps[$i]} 
