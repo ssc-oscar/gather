@@ -87,8 +87,8 @@ while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ 
 done | gzip > gl201813.new.heads &
 
 python3 listU.py ghReposList201813 repos '{ "fork" : false }' html_url | sed "s|^b'||;s|'$||" > ghReposList201813.nofork
-split -n l/9 -da1 ghReposList201813.nofork. ghReposList201813.nofork
-for j in {0..8}
+split -n l/30 -da2 ghReposList201813.nofork ghReposList201813.nofork.
+for j in {0..29}
 do sed 's|https://github.com/|gh:|' ghReposList201813.nofork.$j | while read r; do
     a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a | sed 's/ //g';
   done | gzip > ghReposList201813.nofork.$j.heads &
@@ -96,7 +96,7 @@ done
 
 python3 listU.py bitbucket201813 repos '{ "updated_on" : { "$gt" : "2018-11-01" } }' full_name | \
   sed "s|^b'||;s|'$||" | sort -u > bitbucket201813.new
-split -n l/9 -da1 bitbucket201813.new. bitbucket201813.new
+split -n l/10 -da1 bitbucket201813.new bitbucket201813.new.
 for j in {0..8}
 do cat bitbucket201813.new.$j | while read r; do
     a=$(git ls-remote bb:$r | awk '{print ";"$1}'); echo bb:$r$a | sed 's/ //g';
