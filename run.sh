@@ -57,8 +57,8 @@ for i in {00..29}
 do cat sf201813.prj.$i | while read r; 
   do gg=$(git ls-remote "https://git.code.sf.net/p/$r/git" 2> /dev/null| awk '{print ";"$1}')
   cc=$(git ls-remote "https://git.code.sf.net/p/$r/code" 2> /dev/null| awk '{print ";"$1}');  
-  [[ $gg == "" ]] || echo $r$gg |sed 's/ ;/;/g'
-  [[ $cc == "" ]] || echo $r$cc|sed 's/ ;/;/g'; 
+  [[ $gg == "" ]] || echo https://git.code.sf.net/p/$r/git$gg |sed 's/ ;/;/g'
+  [[ $cc == "" ]] || echo https://git.code.sf.net/p/$r/code$cc|sed 's/ ;/;/g'; 
   done | gzip > sf201813.prj.$i.heads & 
 done
 
