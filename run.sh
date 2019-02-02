@@ -46,9 +46,21 @@ done
 
 python3 bbRepos.py 1980-01-01 bitbucket201813 &> bbRepos201813.out &
 
-(python3 sfRepos.py sf201813 repos &> sf201813.out; python3 extractSfGit.py sf201813 repos &>> sf201813.out) &
+python3 sfRepos.py sf201813 repos &> sf201813.out; python3 extractSfGit.py sf201813 repos &>> sf201813.out) &
+
 
 python3 	glRepos.py 1 gl201813 repos &> gl201813.out &
+
+wait
+
+for i in {00..29}
+do cat sf201813.prj.$i | while read r; 
+  do gg=$(git ls-remote "https://git.code.sf.net/p/$r/git" 2> /dev/null| awk '{print ";"$1}')
+  cc=$(git ls-remote "https://git.code.sf.net/p/$r/code" 2> /dev/null| awk '{print ";"$1}');  
+  [[ $gg == "" ]] || echo $r$gg |sed 's/ ;//g'
+  [[ $cc == "" ]] || echo $r$cc|sed 's/ ;//g'; 
+  done | gzip > sf201813.prj.$i.heads & 
+done
 
 #other forges git.bioconductor.org, 
 wget http://git.bioconductor.org -O bio.html
