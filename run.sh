@@ -44,12 +44,20 @@ do fr=$(($i*5000000+$strt))
    python3 ghReposList.py ${un[$i]} ${ps[$i]} ghReposList201813 $fr $to &> ghReposList201813.$fr-$to &
 done   
 
-python3 bbRepos.py 1980-01-01 bitbucket201813 &> bbRepos201813.out &
+python3 bbRepos.py 1980-01-01 bitbucket201813 2012-01-01 &> bbRepos2018130.out &
+python3 bbRepos.py 2012-01-01 bitbucket201813 2014-01-01 &> bbRepos2018131.out &
+python3 bbRepos.py 2014-01-01 bitbucket201813 2015-01-01 &> bbRepos2018132.out &
+python3 bbRepos.py 2015-01-01 bitbucket201813 2016-01-01 &> bbRepos2018133.out &
+python3 bbRepos.py 2016-01-01 bitbucket201813 2017-01-01 &> bbRepos2018134.out &
+python3 bbRepos.py 2017-01-01 bitbucket201813  &> bbRepos2018135.out &
 
-python3 sfRepos.py sf201813 repos &> sf201813.out; python3 extractSfGit.py sf201813 repos &>> sf201813.out) &
 
+python3 sfRepos.py sf201813 repos &> sf201813.out &
+# need to get the latest heads anyway, see below
+#python3 extractSfGit.py sf201813 repos &>> sf201813.out) &
 
 python3 	glRepos.py 1 gl201813 repos &> gl201813.out &
+
 
 wait
 
