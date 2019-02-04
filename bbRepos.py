@@ -7,6 +7,8 @@ jsonDict = {}
 #url = 'https://api.bitbucket.org/2.0/repositories/?pagelen=100&after=2017-11-18'
 #url = 'https://api.bitbucket.org/2.0/repositories/?pagelen=100&before='+sys.argv[2]+'&after='+sys.argv[1]
 url = 'https://api.bitbucket.org/2.0/repositories/?pagelen=100&after='+sys.argv[1]
+if len(sys.argv) > 3:
+  url = url + '&before='+sys.argv[3]
 
 client = pymongo.MongoClient ()
 dbname = sys .argv[2]

@@ -4,17 +4,21 @@ import requests
 
 jsonDict = {}
 
-client = pymongo.MongoClient (host='da1')
+client = pymongo.MongoClient ()
 # Get a reference to a particular database
 args = list(sys.argv)
 args.pop (0)
 db = client [args.pop (0)]
 # Reference a particular collection in the database
 coll = db [args.pop (0)]
+q = args.pop (0)
+#print (q)
+query = json.loads(q)
+# { "last_activity_at":{ $gt : "2018-11-10T03:25:57.704196+00:00" } }
 
 rest = args
 #for r in coll .find ({},timeOut = False):  
-for r in coll .find ():  
+for r in coll .find (query):  
   if (rest[0] in r and r[rest[0]] is not None):
    n = r[rest[0]]
    if (type(n) is not str): n = str (n)
