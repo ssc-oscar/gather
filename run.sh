@@ -35,14 +35,17 @@ do fr=$(($i*20000000+$strt))
 done
 wait
 
-fi
-
 strt=150000000
 for i in {0..5}
 do fr=$(($i*5000000+$strt))
    to=$(($fr+5000000))
    python3 ghReposList.py ${un[$i]} ${ps[$i]} ghReposList201813 $fr $to &> ghReposList201813.$fr-$to &
 done   
+
+fi
+
+#get updated repos only
+python3 ghUpdatedRepos.py 2018-12-01 gh201813 reposu  &> ghReposList201813.updt &
 
 python3 bbRepos.py 1980-01-01 bitbucket201813 2012-01-01 &> bbRepos2018130.out &
 python3 bbRepos.py 2012-01-01 bitbucket201813 2014-01-01 &> bbRepos2018131.out &
@@ -100,6 +103,8 @@ done | gzip > cgit.kde.org.heads &
 # git.kernel.org
 #  git.savannah.gnu git.debian.org
 wait
+
+
 python3 listU.py gl201813 repos '{ "last_activity_at" : { "$gt" : "2018-11-01" }}' http_url_to_repo | sed "s|^b'||;s|'$||" > gl201813.new)&
 
 cat  gl201813.new | \
@@ -121,6 +126,14 @@ for j in {0..8}
 do cat bitbucket201813.new.$j | while read r; do
     a=$(git ls-remote bb:$r | awk '{print ";"$1}'); echo bb:$r$a | sed 's/ //g';
   done | gzip > bitbucket201813.new.$j.heads &
+done
+
+python3 listU.py gh201813 reposu '{}' nameWithOwner | sed "s|^b'||;s|'$||" | sort -u > gh201813.u
+split -n l/30 -da1 gh201813.u gh201813.u.
+for j in {0..29}
+do cat gh201813.u.$j | while read r; do
+    a=$(git ls-remote gh:$r | awk '{print ";"$1}'); echo gh:$r$a | sed 's/ //g';
+  done | gzip > gh201813.u.$j.heads &
 done
 
 wait
