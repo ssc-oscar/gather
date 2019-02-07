@@ -128,7 +128,7 @@ do cat bitbucket201813.new.$j | while read r; do
   done | gzip > bitbucket201813.new.$j.heads &
 done
 
-python3 listU.py gh201813 reposu '{}' nameWithOwner | sed "s|^b'||;s|'$||" | sort -u > gh201813.u
+python3 listU.py gh201813 reposu '{"isFork" : false}' nameWithOwner | sed "s|^b'||;s|'$||" | sort -u > gh201813.u
 split -n l/30 -da2 gh201813.u gh201813.u.
 for j in {0..29}
 do cat gh201813.u.$j | while read r; do
