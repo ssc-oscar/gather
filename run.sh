@@ -129,7 +129,7 @@ do cat bitbucket201813.new.$j | while read r; do
 done
 
 python3 listU.py gh201813 reposu '{}' nameWithOwner | sed "s|^b'||;s|'$||" | sort -u > gh201813.u
-split -n l/30 -da1 gh201813.u gh201813.u.
+split -n l/30 -da2 gh201813.u gh201813.u.
 for j in {0..29}
 do cat gh201813.u.$j | while read r; do
     a=$(git ls-remote gh:$r | awk '{print ";"$1}'); echo gh:$r$a | sed 's/ //g';
