@@ -2,6 +2,7 @@
 
 if [[ 'a' == 'b' ]];
 then
+
 strt=0
 for i in {0..5}
 do fr=$(($i*20000000+$strt))
@@ -9,7 +10,6 @@ do fr=$(($i*20000000+$strt))
    python3 ghReposList.py ${un[$i]} ${ps[$i]} ghReposList201813 $fr $to &> ghReposList201812.$fr-$to &
 done
 wait
-fi 
 
 strt=120000000
 for i in {0..4}
@@ -17,6 +17,8 @@ do fr=$(($i*20000000+$strt))
    to=$(($fr+20000000))
    python3 ghReposList.py ${un[$i]} ${ps[$i]} ghReposList201813 $fr $to &> ghReposList201812.$fr-$to &
 done
+
+fi
 if [[ 'a' == 'b' ]];
 then
 strt=0
@@ -45,8 +47,10 @@ done
 fi
 
 #get updated repos only
-python3 ghUpdatedRepos.py 2018-12-01 gh201813 reposu  &> ghReposList201813.updt &
+#python3 ghUpdatedRepos.py 2018-12-01 gh201813 repos  &> ghReposList201813.updt &
+python3 ghUpdatedRepos.py 2019-01-01 gh201901 repos  &> ghReposList201901.updt &
 
+#needs to be chaged to 201001
 python3 bbRepos.py 1980-01-01 bitbucket201813 2012-01-01 &> bbRepos2018130.out &
 python3 bbRepos.py 2012-01-01 bitbucket201813 2014-01-01 &> bbRepos2018131.out &
 python3 bbRepos.py 2014-01-01 bitbucket201813 2015-01-01 &> bbRepos2018132.out &
@@ -61,9 +65,9 @@ python3 sfRepos.py sf201813 repos &> sf201813.out &
 
 python3 	glRepos.py 1 gl201813 repos &> gl201813.out &
 
-
 wait
 
+#wher did sf201813.prj.$i came from?
 for i in {00..29}
 do cat sf201813.prj.$i | while read r; 
   do gg=$(git ls-remote "https://git.code.sf.net/p/$r/git" 2> /dev/null| awk '{print ";"$1}')
@@ -118,6 +122,14 @@ do sed 's|https://github.com/|gh:|' ghReposList201813.nofork.$j | while read r; 
     a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a | sed 's/ //g';
   done | gzip > ghReposList201813.nofork.$j.heads &
 done
+#Why again?
+python3 listU.py gh201813 reposu '{"isFork" : false}' nameWithOwner | sed "s|^b'||;s|'$||" | sort -u > gh201813.u
+split -n l/30 -da2 gh201813.u gh201813.u.
+for j in {00..29}
+do cat gh201813.u.$j | while read r; do
+    a=$(git ls-remote gh:$r | awk '{print ";"$1}'); echo gh:$r$a | sed 's/ //g';
+  done | gzip > gh201813.u.$j.heads &
+done
 
 python3 listU.py bitbucket201813 repos '{ "updated_on" : { "$gt" : "2018-11-01" } }' full_name | \
   sed "s|^b'||;s|'$||" | sort -u > bitbucket201813.new
@@ -126,14 +138,6 @@ for j in {0..8}
 do cat bitbucket201813.new.$j | while read r; do
     a=$(git ls-remote bb:$r | awk '{print ";"$1}'); echo bb:$r$a | sed 's/ //g';
   done | gzip > bitbucket201813.new.$j.heads &
-done
-
-python3 listU.py gh201813 reposu '{"isFork" : false}' nameWithOwner | sed "s|^b'||;s|'$||" | sort -u > gh201813.u
-split -n l/30 -da2 gh201813.u gh201813.u.
-for j in {00..29}
-do cat gh201813.u.$j | while read r; do
-    a=$(git ls-remote gh:$r | awk '{print ";"$1}'); echo gh:$r$a | sed 's/ //g';
-  done | gzip > gh201813.u.$j.heads &
 done
 
 wait
