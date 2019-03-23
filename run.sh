@@ -60,14 +60,16 @@ python3 bbRepos.py 2017-01-01 bitbucket201813  &> bbRepos2018135.out &
 
 
 python3 sfRepos.py sf201813 repos &> sf201813.out &
-# need to get the latest heads anyway, see below
-#python3 extractSfGit.py sf201813 repos &>> sf201813.out) &
+#python3 extractSfGit.py sf201813 repos &>> sf201813.out
 
 python3 	glRepos.py 1 gl201813 repos &> gl201813.out &
 
 wait
 
+
 #wher did sf201813.prj.$i came from?
+python3 listU.py sf201813 repos url | sed "s|b`https://sourceforge.net/projects//p/||;s|'$||;" > sf201813.prj 
+split -n l/30 -da2 sf201813.prj sf201813.prj.
 for i in {00..29}
 do cat sf201813.prj.$i | while read r; 
   do gg=$(git ls-remote "https://git.code.sf.net/p/$r/git" 2> /dev/null| awk '{print ";"$1}')
