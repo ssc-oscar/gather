@@ -1,73 +1,28 @@
 #!/bin/bash
 
-if [[ 'a' == 'b' ]];
-then
-
-strt=0
-for i in {0..5}
-do fr=$(($i*20000000+$strt))
-   to=$(($fr+20000000))
-   python3 ghReposList.py ${un[$i]} ${ps[$i]} ghReposList201813 $fr $to &> ghReposList201812.$fr-$to &
-done
-wait
-
-strt=120000000
-for i in {0..4}
-do fr=$(($i*20000000+$strt))
-   to=$(($fr+20000000))
-   python3 ghReposList.py ${un[$i]} ${ps[$i]} ghReposList201813 $fr $to &> ghReposList201812.$fr-$to &
-done
-
-fi
-if [[ 'a' == 'b' ]];
-then
-strt=0
-for i in {0..5}
-do fr=$(($i*20000000+$strt))
-   to=$(($fr+20000000))
-   python3 ghReposList.py ${un[$i]} ${ps[$i]} ghReposList201813 $fr $to &> ghReposList201812.$fr-$to &
-done
-wait
-
-strt=120000000
-for i in {0..4}
-do fr=$(($i*20000000+$strt))
-   to=$(($fr+20000000))
-   python3 ghReposList.py ${un[$i]} ${ps[$i]} ghReposList201813 $fr $to &> ghReposList201812.$fr-$to &
-done
-wait
-
-strt=150000000
-for i in {0..5}
-do fr=$(($i*5000000+$strt))
-   to=$(($fr+5000000))
-   python3 ghReposList.py ${un[$i]} ${ps[$i]} ghReposList201813 $fr $to &> ghReposList201813.$fr-$to &
-done   
-
-fi
-
+DT=201903
 #get updated repos only
 #python3 ghUpdatedRepos.py 2018-12-01 gh201813 repos  &> ghReposList201813.updt &
-python3 ghUpdatedRepos.py 2019-01-01 gh201901 repos  &> ghReposList201901.updt &
+python3 ghUpdatedRepos.py 2019-02-01 gh$DT repos  &> ghReposList$DT.updt &
 
 #needs to be chaged to 201001
-python3 bbRepos.py 1980-01-01 bitbucket201813 2012-01-01 &> bbRepos2018130.out &
-python3 bbRepos.py 2012-01-01 bitbucket201813 2014-01-01 &> bbRepos2018131.out &
-python3 bbRepos.py 2014-01-01 bitbucket201813 2015-01-01 &> bbRepos2018132.out &
-python3 bbRepos.py 2015-01-01 bitbucket201813 2016-01-01 &> bbRepos2018133.out &
-python3 bbRepos.py 2016-01-01 bitbucket201813 2017-01-01 &> bbRepos2018134.out &
-python3 bbRepos.py 2017-01-01 bitbucket201813  &> bbRepos2018135.out &
+python3 bbRepos.py 1980-01-01 bitbucket$DT 2012-01-01 &> bbRepos${DT}0.out &
+python3 bbRepos.py 2012-01-01 bitbucket$DT 2014-01-01 &> bbRepos${DT}1.out &
+python3 bbRepos.py 2014-01-01 bitbucket$DT 2015-01-01 &> bbRepos${DT}2.out &
+python3 bbRepos.py 2015-01-01 bitbucket$DT 2016-01-01 &> bbRepos${DT}3.out &
+python3 bbRepos.py 2016-01-01 bitbucket$DT 2017-01-01 &> bbRepos${DT}4.out &
+python3 bbRepos.py 2017-01-01 bitbucket$DT  &> bbRepos${DT}5.out &
 
 
-python3 sfRepos.py sf201813 repos &> sf201813.out &
+python3 sfRepos.py sf$DT repos &> sf$DT.out &
 #python3 extractSfGit.py sf201813 repos &>> sf201813.out
 
-python3 	glRepos.py 1 gl201813 repos &> gl201813.out &
+python3 	glRepos.py 1 gl$DT repos &> gl$DT.out &
 
 wait
 
 
-#wher did sf201813.prj.$i came from?
+#where did sf201813.prj.$i came from?
 python3 listU.py sf201813 repos url | sed "s|b`https://sourceforge.net/projects//p/||;s|'$||;" > sf201813.prj 
 split -n l/30 -da2 sf201813.prj sf201813.prj.
 for i in {00..29}
