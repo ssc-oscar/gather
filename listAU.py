@@ -6,7 +6,7 @@ jsonDict = {}
 args = list(sys.argv)
 args.pop (0)
 
-client = pymongo.MongoClient ()
+client = pymongo.MongoClient (host="da1")
 # Get a reference to a particular database
 db = client [args.pop(0)]
 # Reference a particular collection in the database

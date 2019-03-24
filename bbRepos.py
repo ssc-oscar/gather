@@ -10,7 +10,7 @@ url = 'https://api.bitbucket.org/2.0/repositories/?pagelen=100&after='+sys.argv[
 if len(sys.argv) > 3:
   url = url + '&before='+sys.argv[3]
 
-client = pymongo.MongoClient ()
+client = pymongo.MongoClient (host="da1")
 dbname = sys .argv[2]
 # Get a reference to a particular database
 db = client [dbname]

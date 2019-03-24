@@ -8,7 +8,7 @@ login = sys.argv [1]
 passwd = sys.argv [2]
 dbname = sys.argv [3]
 
-client = pymongo.MongoClient ()
+client = pymongo.MongoClient (host="da1")
 # Get a reference to a particular database
 db = client [dbname]
 
