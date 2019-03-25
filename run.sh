@@ -39,8 +39,8 @@ done
 
 # Do other forges git.bioconductor.org, 
 wget http://git.bioconductor.org -O bio.html
-cat bio.html | awk '{print $2}' | grep / | grep -v '\*' | awk '{ print "https://git.bioconductor.org/"$1}'> fatal: repository 'https://git.code.sf.net/p/perlcaster/git/' not found
-cat bioconductor.org | \
+cat bio.html | awk '{print $2}' | grep / | grep -v '\*' | awk '{ print "https://git.bioconductor.org/"$1}' > bioconductor.org.$DT 
+cat bioconductor.org.$DT | \
 while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; 
 done | gzip > bioconductor.org.heads &
 
@@ -57,16 +57,61 @@ cat cgit.kde.org | \
 while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; 
 done | gzip > cgit.kde.org.heads &
 
+# pages 1-300
+# https://gitlab.gnome.org/explore/projects?page=300&sort=latest_activity_desc
+for p in {1..300}
+do wget "https://gitlab.gnome.org/explore/projects?page=200" -O - 2> /dev/null | perl -ane 'chop();if (m|^<a class="text-plain" href="|){s|<a class="text-plain" href="||;s|".*||;print "https://gitlab.gnome.org$_\n"}'
+done > gitlab.gnome.org
+cat gitlab.gnome.org | while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; done | gzip > gitlab.gnome.org.heads &
+
+
+# pages 1-1530 
+# git.debian.org -> https://salsa.debian.org/explore/projects?page=1540&sort=latest_activity_desc
+for of in {0..9}; do 
+for p in $(eval "echo {$((1+$of*153))..$((153+$of*153))}")
+do wget "https://salsa.debian.org/explore/projects?page=$p"  -O - 2> /dev/null | perl -ane 'chop(); while (m|<a class="project" href="([^"]*)"|g){print "https://salsa.debian.org$1\n"}'
+done > git.debian.org.$of &
+done
+wait
+for of in {0..9}; do
+cat git.debian.org.$of | while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; done | gzip > git.debian.org.$of.heads &
+done
+
+
 # Add following forges as well
-# https://gitlab.gnome.org/explore 
-# https://android.googlesource.com/
-# https://cgit.drupalcode.org/
-# https://git.zx2c4.com/cgit
-# android.git.kernel.org
-# http://git.eclipse.org/
-# git.postgresql.org
-# git.kernel.org
-# git.savannah.gnu git.debian.org
+# https://cgit.drupalcode.org/ or https://www.drupal.org/project/project_theme https://www.drupal.org/project/modules https://www.drupal.org/distributions
+# android.git.kernel.org ??
+
+wget https://android.googlesource.com/ -O android.googlesource.com.html
+perl -ane 'while(m|class="RepoList-itemName">([^<]*)</|g){print "https://android.googlesource.com/$1\n";}' < android.googlesource.com.html > android.googlesource.com
+cat android.googlesource.com | \
+while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g';
+done | gzip > android.googlesource.com.heads &
+
+wget https://git.zx2c4.com -O git.zx2c4.com.html
+perl -ane "while (m|<td class='toplevel-repo'><a title='([^']*)'|g){print \"https://git.zx2c4.com/\$1\n\";}" < git.zx2c4.com.html > git.zx2c4.com
+cat git.zx2c4.com | \
+while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g';
+done | gzip > git.zx2c4.com.heads &
+
+wget http://git.eclipse.org/ -O git.eclipse.org.html
+perl -ane "while (m|<td class='sublevel-repo'><a title='[^']*' href='([^']*)'|g){print \"https://git.eclipse.org\$1\n\";}" < git.eclipse.org.html | sed 's|/c/|/r/|' > git.eclipse.org
+cat git.eclipse.org | while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; done | gzip > git.eclipse.org.heads &
+
+
+wget http://git.postgresql.org -O git.postgresql.org.html
+perl -ane 'while(m|<a class="list" href="/gitweb/\?p=([^"]*);a=summary"|g){print "https://git.postgresql.org/git/$1\n"}' < git.postgresql.org.html | sort -u > git.postgresql.org
+cat git.postgresql.org | while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; done | gzip > git.postgresql.org.heads &
+
+wget http://git.kernel.org  -O git.kernel.org.html
+perl -ane "while (m|<td class='sublevel-repo'><a title='[^']*' href='([^']*)'|g){print \"https://git.kernel.org\$1\n\";}" < git.kernel.org.html > git.kernel.org
+cat git.kernel.org | while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; done | gzip > git.kernel.org.heads &
+
+
+wget http://git.savannah.gnu.org/cgit -O git.savannah.gnu.org.html
+perl -ane "while (m|<td class='sublevel-repo'><a title='[^']*' href='([^']*)'|g){print \"https://git.savannah.gnu.org\$1\n\";}" < git.savannah.gnu.org.html | sed 's|/cgit/|/git/|' | sort -u | > git.savannah.gnu.org
+cat git.savannah.gnu.org | while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; done | gzip > git.savannah.gnu.org.heads &
+
 wait
 
 # Get update repos for GL
