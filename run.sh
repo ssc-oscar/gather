@@ -15,7 +15,7 @@ python3 bbRepos.py 2017-01-01 bitbucket$DT  &> bbRepos${DT}5.out &
 
 
 # SF
-python3 sfRepos.py sf$DT repos &> sf$DT.out &
+python3 listU.py sf$DT repos '{}' url | sed "s|b'https://sourceforge.net/projects/||;s|'$||;" | sort -u > sf$DT.prj
 #python3 extractSfGit.py sf201813 repos &>> sf201813.out
 
 # Gitlab
@@ -23,9 +23,6 @@ python3 	glRepos.py 1 gl$DT repos &> gl$DT.out &
 
 wait
 
-
-# Extract stuff from the database
-python3 listU.py sf$DT repos url | sed "s|b'https://sourceforge.net/projects//p/||;s|'$||;" > sf$DT.prj 
 # Split for parallel processing
 split -n l/30 -da2 sf$DT.prj sf$DT.prj.
 for i in {00..29}
@@ -34,7 +31,7 @@ do cat sf$DT.prj.$i | while read r;
   cc=$(git ls-remote "https://git.code.sf.net/p/$r/code" 2> /dev/null| awk '{print ";"$1}');  
   [[ $gg == "" ]] || echo https://git.code.sf.net/p/$r/git$gg |sed 's/ ;/;/g'
   [[ $cc == "" ]] || echo https://git.code.sf.net/p/$r/code$cc|sed 's/ ;/;/g'; 
-  done | gzip > sf201813.prj.$i.heads & 
+  done | gzip > sf$DT.prj.$i.heads & 
 done
 
 # Do other forges git.bioconductor.org, 
@@ -59,9 +56,10 @@ done | gzip > cgit.kde.org.heads &
 
 # pages 1-300
 # https://gitlab.gnome.org/explore/projects?page=300&sort=latest_activity_desc
+# insert username/password to prevend password requests
 for p in {1..300}
-do wget "https://gitlab.gnome.org/explore/projects?page=200" -O - 2> /dev/null | perl -ane 'chop();if (m|^<a class="text-plain" href="|){s|<a class="text-plain" href="||;s|".*||;print "https://gitlab.gnome.org$_\n"}'
-done > gitlab.gnome.org
+do wget "https://gitlab.gnome.org/explore/projects?page=$p" -O - 2> /dev/null | perl -ane 'chop();if (m|^<a class="text-plain" href="|){s|<a class="text-plain" href="||;s|".*||;s|^/||;print "https://a:a@gitlab.gnome.org/$_\n"}'
+done | sort -u > gitlab.gnome.org
 cat gitlab.gnome.org | while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; done | gzip > gitlab.gnome.org.heads &
 
 
@@ -69,12 +67,12 @@ cat gitlab.gnome.org | while read r; do a=$(git ls-remote $r | awk '{print ";"$1
 # git.debian.org -> https://salsa.debian.org/explore/projects?page=1540&sort=latest_activity_desc
 for of in {0..9}; do 
 for p in $(eval "echo {$((1+$of*153))..$((153+$of*153))}")
-do wget "https://salsa.debian.org/explore/projects?page=$p"  -O - 2> /dev/null | perl -ane 'chop(); while (m|<a class="project" href="([^"]*)"|g){print "https://salsa.debian.org$1\n"}'
+do wget "https://salsa.debian.org/explore/projects?page=$p"  -O - 2> /dev/null | perl -ane 'chop(); while (m|<a class="project" href="([^"]*)"|g){print "https://a:a\@salsa.debian.org$1\n"}'
 done > git.debian.org.$of &
 done
 wait
 for of in {0..9}; do
-cat git.debian.org.$of | while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; done | gzip > git.debian.org.$of.heads &
+cat git.debian.org.$of | while read r; do a=$(git ls-remote $r 2> err | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; sleep 2; done | gzip > git.debian.org.$of.heads 
 done
 
 

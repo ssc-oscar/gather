@@ -16,7 +16,7 @@ collName = sys.argv[3] # expects collection name as third arg
 db = client[dbname]
 coll = db[collName]
 
-beginurl = "https://gitlab.com/api/v4/projects?archived=false&membership=false&order_by=created_at&owned=false&page={}&per_page=99&simple=false&sort=desc&starred=false&statistics=false&with_custom_attributes=false&with_issues_enabled=false&with_merge_requests_enabled=false"
+beginurl = "https://gitlab.com/api/v4/projects?archived=false&membership=false&order_by=created_at&owned=false&per_page=99&simple=false&sort=desc&starred=false&statistics=false&with_custom_attributes=false&with_issues_enabled=false&with_merge_requests_enabled=false"
 
 gleft = 0
 success = "Successfully loaded page {}. Got {} repos, current total is {}"

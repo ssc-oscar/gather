@@ -15,3 +15,10 @@ host gl
     HostName gitlab.com
     IdentitiesOnly yes
     IdentityFile ~/.ssh/id_rsagithub
+
+
+host gl_gnome
+    User git
+    HostName gitlab.gnome.org
+    IdentitiesOnly yes
+    IdentityFile ~/.ssh/id_rsagithub
