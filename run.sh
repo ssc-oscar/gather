@@ -6,12 +6,8 @@ DT=201903
 python3 ghUpdatedRepos.py 2019-02-01 gh$DT repos  &> ghReposList$DT.updt &
 
 # BB: need to extract all, no way to check for updated ones
-python3 bbRepos.py 1980-01-01 bitbucket$DT 2012-01-01 &> bbRepos${DT}0.out &
-python3 bbRepos.py 2012-01-01 bitbucket$DT 2014-01-01 &> bbRepos${DT}1.out &
-python3 bbRepos.py 2014-01-01 bitbucket$DT 2015-01-01 &> bbRepos${DT}2.out &
-python3 bbRepos.py 2015-01-01 bitbucket$DT 2016-01-01 &> bbRepos${DT}3.out &
-python3 bbRepos.py 2016-01-01 bitbucket$DT 2017-01-01 &> bbRepos${DT}4.out &
-python3 bbRepos.py 2017-01-01 bitbucket$DT  &> bbRepos${DT}5.out &
+python3 bbRepos.py 1980-01-01 bitbucket$DT 2015-05-03 &> bbRepos${DT}0.out &
+python3 bbRepos.py 2015-05-03 bitbucket$DT 2022-01-01 &> bbRepos${DT}1.out &
 
 
 # SF
