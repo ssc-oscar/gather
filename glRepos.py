@@ -16,7 +16,7 @@ collName = sys.argv[3] # expects collection name as third arg
 db = client[dbname]
 coll = db[collName]
 
-beginurl = "https://gitlab.com/api/v4/projects?archived=false&membership=false&order_by=created_at&owned=false&per_page=99&simple=false&sort=desc&starred=false&statistics=false&with_custom_attributes=false&with_issues_enabled=false&with_merge_requests_enabled=false"
+beginurl = "https://gitlab.com/api/v4/projects?archived=false&membership=false&order_by=created_at&owned=false&page={}&per_page=99&simple=false&sort=desc&starred=false&statistics=false&with_custom_attributes=false&with_issues_enabled=false&with_merge_requests_enabled=false"
 
 gleft = 0
 success = "Successfully loaded page {}. Got {} repos, current total is {}"
@@ -55,7 +55,7 @@ def get(url, coll):
             # get total number of pages (i.e. get last possible page)
             lll = r.headers.get('Link')
             ll = lll.replace(';', ',').split(',')
-            url = ll[ll.index(' rel="last"') -
+            url = ll[ll.index(' rel="next"') -
                     1].replace('<', '').replace('>', '').lstrip()
             last = re.findall(r'&page=(\d+)&', url)
             if (len(last) == 1):
@@ -71,35 +71,38 @@ def get(url, coll):
                 coll.insert(el)
 
             pageNum = int(r.headers.get('X-Next-Page'))
-            while (pageNum <= last):
+            consecutiveEmpty = 0
+            while (pageNum):
                 gleft = int(r.headers.get('RateLimit-Remaining'))
                 gleft = wait(gleft)
                 # extract next page url
                 url = beginurl.format(pageNum)
-                try:
-                    r = requests .get(url, headers=header)
-                    if r.status_code == 403:
-                        return "got blocked", str(bginnum)
-                    if (r.ok):
-                        lll = r.headers.get('Link')
-                        t = r.text
-                        array1 = json.loads(t)
-                        total += len(array1)
-                        print(success.format(pageNum, len(array1), total))
-                        
-                        for el in array1:
-                            el['page_number'] = pageNum
-                            coll.insert(el)
+                # try:
+                r = requests .get(url, headers=header)
+                if r.status_code == 403:
+                    return "got blocked", str(bginnum)
+                if (r.ok):
+                    lll = r.headers.get('Link')
+                    t = r.text
+                    array1 = json.loads(t)
+                    total += len(array1)
+                    print(success.format(pageNum, len(array1), total))
 
+                    for el in array1:
+                        el['page_number'] = pageNum
+                        coll.insert(el)
+
+                    if (r.headers.get('X-Next-Page')):
                         pageNum = int(r.headers.get('X-Next-Page'))
+                        consecutiveEmpty = 0
                     else:
-                        sys.stderr.write("Can't find:{}{}{}".format('\n', url, '\n'))
+                        sys.stderr.write("Can't find next page from:{}{}{}".format('\n', url, '\n'))
                         pageNum += 1
+                        consecutiveEmpty += 1
+                        if consecutiveEmpty > 4:
+                            sys.stderr.write("Page {} is 5 consecutive empty pages. Exiting".format(pageNum))
+                            return
                         continue
-
-                except requests.exceptions.ConnectionError:
-                    sys.stderr.write('could not get ' + url + '\n')
-
         else:
             sys.stderr.write("url can not found:\n" + url + '\n')
             return
