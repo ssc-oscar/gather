@@ -115,9 +115,8 @@ cat git.savannah.gnu.org | while read r; do a=$(git ls-remote $r | awk '{print "
 wait
 
 # Get update repos for GL
-python3 listU.py gl$DT repos '{ "last_activity_at" : { "$gt" : "2019-02-01" }}' http_url_to_repo | sed "s|^b'||;s|'$||" > gl$DT.new)&
-cat  gl$DT.new | \
-while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; 
+python3 listU.py gl$DT repos '{ "last_activity_at" : { "$gt" : "2019-02-01" }}' http_url_to_repo | sed "s|^b'||;s|'$||" > gl$DT.new 
+cat  gl$DT.new | while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; 
 done | gzip > gl$DT.new.heads &
 
 # Get updated, no-forks for GH
