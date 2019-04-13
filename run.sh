@@ -96,7 +96,9 @@ if [ "$j" -eq "-1" ]; then break; fi;
 perl -ane 'while(m|<span class="project-name">([^<]*)</span>|g){print "https://git.drupalcode.org/project/$1\n"}' < drupal.html>> drupal.com;
 if [ `expr $i % 10` -eq 0 ]; then  sleep 2; fi;
 done  
-
+cat drupal.com | \
+while read r; do r1=$(echo $r|sed 's|.*/project/|dr:project/|');git ls-remote $r1 | grep -E 'refs/heads|HEAD' | sed 's|\s*refs/heads/|;|;s|\s*HEAD|;HEAD|;s|^|'$r1';|';
+done | gzip > drupal.com.heads &
 
 
 wget https://android.googlesource.com/ -O android.googlesource.com.html
