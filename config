@@ -22,3 +22,10 @@ host gl_gnome
     HostName gitlab.gnome.org
     IdentitiesOnly yes
     IdentityFile ~/.ssh/id_rsagithub
+    
+
+host dr
+  user git
+  HostName git.drupal.org
+  IdentitiesOnly yes
+  IdentityFile ~/.ssh/id_rsagithub
