@@ -79,8 +79,33 @@ done
 
 
 # Add following forges as well
-# https://cgit.drupalcode.org/ or https://www.drupal.org/project/project_theme https://www.drupal.org/project/modules https://www.drupal.org/distributions
 # android.git.kernel.org ??
+
+#there are totally 2398 pages in https://git.drupalcode.org/explore/projects
+thost="https://git.drupalcode.org/explore/projects?page="
+i=0
+while :
+do
+i=$(($i+1))
+rhost="$thost$i"
+
+curl -o drupal.html  $rhost
+#if j==-1,this is invalid page,we have gotten all pages successfully. 
+j=$(perl -ane 'while(m|<h5>This user doesn|g){print "-1"}' < drupal.html)
+if [ "$j" -eq "-1" ];
+then
+   break
+fi
+#all urls will be stored in ./drupal.com
+perl -ane 'while(m|<span class="project-name">([^<]*)</span>|g){print "https://git.drupalcode.org/project/$1\n"}' < drupal.html>> drupal.com
+
+if [ `expr $i % 10` -eq 0 ]
+then
+    sleep 2
+fi
+done  
+
+
 
 wget https://android.googlesource.com/ -O android.googlesource.com.html
 perl -ane 'while(m|class="RepoList-itemName">([^<]*)</|g){print "https://android.googlesource.com/$1\n";}' < android.googlesource.com.html > android.googlesource.com
