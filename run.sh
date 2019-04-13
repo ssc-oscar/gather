@@ -84,6 +84,7 @@ done
 #there are totally 2398 pages in https://git.drupalcode.org/explore/projects
 thost="https://git.drupalcode.org/explore/projects?page="
 i=0
+rm drupal.org
 while :
 do i=$(($i+1));
 rhost="$thost$i";
