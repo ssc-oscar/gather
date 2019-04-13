@@ -89,7 +89,7 @@ do i=$(($i+1));
 rhost="$thost$i";
 curl -o drupal.html  $rhost;
 #if j==-1,this is invalid page,we have gotten all pages successfully. 
-j=$(perl -ane 'if(m|<h5>This user doesn|){print "-1"}else{print "0"}' < drupal.html);
+j=$(perl -e '$e=0;while(<STDIN>){if(m|<h5>This user doesn|){$e=-1;last;};}; print "$e\n"' < drupal.html);
 if [ "$j" -eq "-1" ]; then break; fi;
 #all urls will be stored in ./drupal.com
 perl -ane 'while(m|<span class="project-name">([^<]*)</span>|g){print "https://git.drupalcode.org/project/$1\n"}' < drupal.html>> drupal.com;
