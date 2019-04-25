@@ -29,3 +29,9 @@ host dr
   HostName git.drupal.org
   IdentitiesOnly yes
   IdentityFile ~/.ssh/id_rsagithub
+
+host deb
+    User git
+    HostName salsa.debian.org
+    IdentitiesOnly yes
+    IdentityFile ~/.ssh/id_rsagithub
