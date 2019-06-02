@@ -40,6 +40,7 @@ ENV NB_USER gather
 ENV NB_UID 22923 
 ENV NB_GID 2343
 ENV HOME /home/$NB_USER
+RUN groupadd -g $NB_GID da
 RUN useradd -m -s /bin/bash -N -u $NB_UID -g $NB_GID $NB_USER && mkdir $HOME/.ssh && chown -R $NB_USER:users $HOME 
 COPY id_rsa_gcloud.pub $HOME/.ssh/authorized_keys
 COPY config $HOME/.ssh/
