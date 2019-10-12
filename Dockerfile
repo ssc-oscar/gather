@@ -27,7 +27,7 @@ RUN apt update && \
 
 
 
-#install ldap authentication to use utk's ldap 
+#install ldap authentication to use utk's ldap: would work only with proper port forwarding
 COPY eecsCA_v3.crt /etc/ssl/ 
 COPY sssd.conf /etc/sssd/ 
 COPY common* /etc/pam.d/ 
@@ -44,5 +44,5 @@ RUN groupadd -g $NB_GID da
 RUN useradd -m -s /bin/bash -N -u $NB_UID -g $NB_GID $NB_USER && mkdir $HOME/.ssh && chown -R $NB_USER:users $HOME 
 COPY id_rsa_gcloud.pub $HOME/.ssh/authorized_keys
 COPY config $HOME/.ssh/
-COPY run.sh *.py /home/$NB_USER/ 
+COPY run*.sh *.py /home/$NB_USER/ 
 RUN chown -R $NB_USER:users $HOME && chmod -R og-rwx $HOME/.ssh
