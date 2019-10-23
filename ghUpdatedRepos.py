@@ -18,13 +18,13 @@ except ValueError:
   raise ValueError("Incorrect beginning date format, should be YYYY-MM-DD")
 
 # DB info
-client = pymongo.MongoClient(host='da1')
+client = pymongo.MongoClient()
 dbName = sys.argv[2] # db name as second arg
 collName = sys.argv[3] # coll name as third arg
 db = client[dbName]
 coll = db[collName]
 
-token = '' # PROVIDE YOUR GITHUB API TOKEN HERE
+token = '9de7ae1b92c2af1b997c498a5f2605e0e4950300' # PROVIDE YOUR GITHUB API TOKEN HERE
 url = 'https://api.github.com/graphql'
 headers = {'Authorization': 'token ' + token}
 start = begin + 'T00:00:00Z'
@@ -113,10 +113,13 @@ while (interval < datetime.now()):
 
     r = requests.post(url=url, json=jsonS, headers=headers)
     res = json.loads(r.text)
-    remaining = res['data']['rateLimit']['remaining']
-    reset = res['data']['rateLimit']['resetAt']
-    if remaining == 0:
-      wait(reset)
+    try:
+      remaining = res['data']['rateLimit']['remaining']
+      reset = res['data']['rateLimit']['resetAt']
+      if remaining == 0:
+        wait(reset)
+    except TypeError as e:
+        print(e)
 
     repos = res['data']['search']['repositoryCount']
     hasNextPage = res['data']['search']['pageInfo']['hasNextPage']

@@ -12,7 +12,7 @@ if len(sys.argv) > 3:
   before = sys.argv[3]
   url = url + '&before='+sys.argv[3]
 
-client = pymongo.MongoClient (host="da1")
+client = pymongo.MongoClient()
 dbname = sys .argv[2]
 # Get a reference to a particular database
 db = client [dbname]

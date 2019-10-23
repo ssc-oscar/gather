@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 import re, itertools, os, pymongo, sys
 
 # DB info
-client = pymongo.MongoClient(host='da1')
+client = pymongo.MongoClient()
 dbname = sys.argv[1] # expects db name as first argument
 collName = sys.argv[2] # expect collection name as second arg
 db = client[dbname]
@@ -65,4 +65,4 @@ for i, proj in enumerate(itertools.islice(projects, len(projects))):
     coll.insert({"url": proj, "source": "SourceForge", "git": None})
 
 # Print how many projects we found
-print("# projects: " + len(projects))
+print("# projects: " + str(len(projects)))

@@ -1,9 +1,10 @@
 #!/bin/bash
 PDT=201905
+PDTdash=2019-05-01
 DT=201910
 # Get updated repos only: updated since last gathering
 #python3 ghUpdatedRepos.py 2018-12-01 gh201813 repos  &> ghReposList201813.updt &
-python3 ghUpdatedRepos.py 2019-05-01 gh$DT repos  &> ghReposList$DT.updt &
+cat tokens_date | while read r; do echo $r | python3 ghUpdatedRepos.new.py gh$DT repos  &> ghReposList$(echo $r | cut -d ' ' -f2).updt & done
 
 # BB: need to extract all, no way to check for updated ones
 #python3 bbRepos.py 1980-01-01 bitbucket$DT 2013-00-01 &> bbRepos${DT}0.out &
@@ -15,7 +16,7 @@ python3 ghUpdatedRepos.py 2019-05-01 gh$DT repos  &> ghReposList$DT.updt &
 #python3 bbRepos.py 2017-05-03 bitbucket$DT 2018-05-03 &> bbRepos${DT}6.out &
 #python3 bbRepos.py 2018-05-03 bitbucket$DT 2022-05-03 &> bbRepos${DT}7.out &
 #get only new, use heads for existing repos
-python3 bbRepos.py 2019-02-01 bitbucket$DT 2022-05-03 &> bbRepos${DT}0.out &
+python3 bbRepos.py $PDTdash bitbucket$DT 2022-05-03 &> bbRepos${DT}0.out &
 
 
 # SF 
@@ -64,9 +65,9 @@ done | gzip > cgit.kde.org.$DT.heads &
 # https://gitlab.gnome.org/explore/projects?page=300&sort=latest_activity_desc
 # insert username/password to prevend password requests
 for p in {1..300}
-do wget "https://gitlab.gnome.org/explore/projects?page=$p" -O - 2> /dev/null | perl -ane 'chop();if (m|^<a class="text-plain" href="|){s|<a class="text-plain" href="||;s|".*||;s|^/||;print "https://a:a@gitlab.gnome.org/$_\n"}'
+do wget "https://gitlab.gnome.org/explore/projects?page=$p" -O - 2> /dev/null | perl -ane 'chop();if (m|^<a class="text-plain" href="|){s|<a class="text-plain" href="||;s|".*||;s|^/||;print "https://a:a\@gitlab.gnome.org/$_\n"}'
 done | sort -u > gitlab.gnome.org.$DT
-cat gitlab.gnome.org.$DT | while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; done | gzip > gitlab.gnome.org.heads.$DT &
+cat gitlab.gnome.org.$DT | while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; done | gzip > gitlab.gnome.org.$DT.heads &
 
 
 # pages 1-1530 
@@ -132,13 +133,13 @@ cat git.kernel.org.$DT | while read r; do a=$(git ls-remote $r | awk '{print ";"
 
 
 wget http://git.savannah.gnu.org/cgit -O git.savannah.gnu.org.html
-perl -ane "while (m|<td class='sublevel-repo'><a title='[^']*' href='([^']*)'|g){print \"https://git.savannah.gnu.org\$1\n\";}" < git.savannah.gnu.org.html | sed 's|/cgit/|/git/|' | sort -u | > git.savannah.gnu.org.$DT
+perl -ane "while (m|<td class='sublevel-repo'><a title='[^']*' href='([^']*)'|g){print \"https://git.savannah.gnu.org\$1\n\";}" < git.savannah.gnu.org.html | sed 's|/cgit/|/git/|' | sort -u  > git.savannah.gnu.org.$DT
 cat git.savannah.gnu.org.$DT | while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; done | gzip > git.savannah.gnu.org.$DT.heads &
 
 wait
 
 # Get update repos for GL
-python3 listU.py gl$DT repos '{ "last_activity_at" : { "$gt" : "2019-02-01" }}' http_url_to_repo | sed "s|^b'||;s|'$||" > gl$DT.new 
+python3 listU.py gl$DT repos '{ "last_activity_at" : { "$gt" : "'"$PDTdash"'" }}' http_url_to_repo | sed "s|^b'||;s|'$||" > gl$DT.new 
 cat  gl$DT.new | sed 's|https://gitlab.com/|gl:|' | while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; 
 done | gzip > gl$DT.new.heads &
 
@@ -152,7 +153,7 @@ do cat gh$DT.u.$j | while read r; do
 done
 
 # Get updated bb (do heads on all 2M?)
-python3 listU.py bitbucket$DT repos '{ "updated_on" : { "$gt" : "2019-02-01" } }' full_name | \
+python3 listU.py bitbucket$DT repos '{ "updated_on" : { "$gt" : "'"$PDTdash"'" } }' full_name | \
   sed "s|^b'||;s|'$||" | sort -u > bitbucket$DT.new
 split -n l/10 -da1 bitbucket$DT.new bitbucket$DT.new.
 for j in {0..8}
