@@ -74,7 +74,7 @@ cat gitlab.gnome.org.$DT | while read r; do a=$(git ls-remote $r | awk '{print "
 # git.debian.org -> https://salsa.debian.org/explore/projects?page=1540&sort=latest_activity_desc
 for of in {0..9}; do 
 for p in $(eval "echo {$((1+$of*163))..$((163+$of*163))}")
-do wget "https://salsa.debian.org/explore/projects?page=$p"  -O - 2> /dev/null | perl -ane 'chop(); while (m|<a class="project" href="([^"]*)"|g){print "https://a:a\@salsa.debian.org$1\n"}'
+do wget "https://salsa.debian.org/explore/projects?page=$p"  -O - 2> /dev/null | perl -ane 'chop(); while (m|<a class="project" href="([^"]*)"|g){print "https://a:a\@salsa.debian.org$1.git\n"}'
 done > git.debian.org.$DT.$of &
 done
 wait
