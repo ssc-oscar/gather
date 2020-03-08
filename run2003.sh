@@ -16,7 +16,7 @@ do ptt=$(date -d"@"$(($PT+($i-1)*$inc)) +"%Y-%m-%d")
    echo $(head -$i tokens|tail -1) $ptt $tt 
 done > tokens_date
 
-cat tokens_date | while read r; do echo $r | python3 ghUpdatedRepos.new.py gh$DT repos  &> ghReposList$(echo $r | cut -d ' ' -f2).updt & done
+cat tokens_date | while read r; do echo $r | python3 ghUpdatedRepos.py gh$DT repos  &> ghReposList$(echo $r | cut -d ' ' -f2).updt & done
 
 # BB: need to extract all, no way to check for updated ones
 #python3 bbRepos.py 1980-01-01 bitbucket$DT 2013-00-01 &> bbRepos${DT}0.out &
@@ -85,7 +85,7 @@ cat gitlab.gnome.org.$DT | while read r; do a=$(git ls-remote $r | awk '{print "
 # pages 1-1530 
 # git.debian.org -> https://salsa.debian.org/explore/projects?page=1540&sort=latest_activity_desc
 for of in {0..9}; do 
-for p in $(eval "echo {$((1+$of*163))..$((163+$of*163))}")
+for p in $(eval "echo {$((1+$of*20))..$((20+$of*20))}")
 do wget "https://salsa.debian.org/explore/projects?page=$p"  -O - 2> /dev/null | perl -ane 'chop(); while (m|<a class="project" href="([^"]*)"|g){print "https://a:a\@salsa.debian.org$1.git\n"}'
 done > git.debian.org.$DT.$of &
 done
@@ -124,6 +124,8 @@ cat android.googlesource.com.$DT | \
 while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g';
 done | gzip > android.googlesource.com.$DT.heads &
 
+###
+
 wget https://git.zx2c4.com -O git.zx2c4.com.html
 perl -ane "while (m|<td class='toplevel-repo'><a title='([^']*)'|g){print \"https://git.zx2c4.com/\$1\n\";}" < git.zx2c4.com.html > git.zx2c4.com.$DT
 cat git.zx2c4.com.$DT | \
@@ -145,7 +147,8 @@ cat git.kernel.org.$DT | while read r; do a=$(git ls-remote $r | awk '{print ";"
 
 
 wget http://git.savannah.gnu.org/cgit -O git.savannah.gnu.org.html
-perl -ane "while (m|<td class='sublevel-repo'><a title='[^']*' href='([^']*)'|g){print \"https://git.savannah.gnu.org\$1\n\";}" < git.savannah.gnu.org.html | sed 's|/cgit/|/git/|' | sort -u  > git.savannah.gnu.org.$DT
+#perl -ane "while (m|<td class='sublevel-repo'><a title='[^']*' href='([^']*)'|g){print \"https://git.savannah.gnu.org\$1\n\";}" < git.savannah.gnu.org.html | sed 's|/cgit/|/git/|' | sort -u  > git.savannah.gnu.org.$DT
+perl -ane "while (m|<td class='toplevel-repo'><a title='([^']*)'|g){print \"https://git.savannah.gnu.org/git/\$1\n\";}" < git.savannah.gnu.org.html | sed 's|/cgit/|/git/|' | sort -u  > git.savannah.gnu.org.$DT
 cat git.savannah.gnu.org.$DT | while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; done | gzip > git.savannah.gnu.org.$DT.heads &
 
 wait

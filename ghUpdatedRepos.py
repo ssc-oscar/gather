@@ -55,8 +55,10 @@ query = '''{
           nameWithOwner
           updatedAt
           createdAt
+          pushedAt
           isFork
           id
+          parent { nameWithOwner }
           description
         }
       }
@@ -73,7 +75,7 @@ def wait(reset):
   time.sleep(wait)
 
 # helper function to loop through and insert repos into mongo db
-def gatherData(res):
+def gatherData (res):
   global total
   repos = res['data']['search']['edges']
   for repo in repos:
@@ -81,7 +83,7 @@ def gatherData(res):
   total += len(repos)
 
   output = "Got {} repos. Total count is {}. Have {} calls remaining."
-  print(output.format(len(repos), total, remaining))
+  print (output.format(len(repos), total, remaining))
 
 # driver loop that iterates through repos in 10 minute intervals
 # iterates from the specified date up to the current time
@@ -99,7 +101,7 @@ while (interval < end_time):
   if r.ok:
     try:
       print("did it come here?")
-      res = json.loads(r.text)
+      res = json.loads(r.content)
       remaining = res['data']['rateLimit']['remaining']
       reset = res['data']['rateLimit']['resetAt']
       if remaining < 11:
