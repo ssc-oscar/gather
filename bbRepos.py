@@ -40,7 +40,8 @@ while True:
   if 'next' not in jsonDict:
     print ("no next")    
     for k in jsonDict.keys ():
-      print (str(k)+':'+str(jsonDict[k]))
+      print (str(k))
+      #print (str(k)+':'+str(jsonDict[k]))
     break
   else: 
     url = jsonDict['next']

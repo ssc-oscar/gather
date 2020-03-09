@@ -44,12 +44,16 @@ python3 glRepos.py 1 gl$DT repos &> gl$DT.out &
 wait
 
 # Split for parallel processing
-cat sf$DT.prj.new | while read r; 
-do gg=$(git ls-remote "https://git.code.sf.net/p/$r/git" 2> /dev/null| awk '{print ";"$1}')
-  cc=$(git ls-remote "https://git.code.sf.net/p/$r/code" 2> /dev/null| awk '{print ";"$1}');  
-  [[ $gg == "" ]] || echo https://git.code.sf.net/p/$r/git$gg |sed 's/ ;/;/g'
-  [[ $cc == "" ]] || echo https://git.code.sf.net/p/$r/code$cc|sed 's/ ;/;/g'; 
-done | gzip > sf$DT.prj.new.heads & 
+split -n l/10 -da1 sf$DT.prj sf$DT.prj.
+for i in {0..9}
+do cat sf$DT.prj.$i | while read r; 
+ do gg=$(git ls-remote "https://git.code.sf.net/p/$r/git" 2> /dev/null| awk '{print ";"$1}')
+   cc=$(git ls-remote "https://git.code.sf.net/p/$r/code" 2> /dev/null| awk '{print ";"$1}');  
+   [[ $gg == "" ]] || echo https://git.code.sf.net/p/$r/git$gg |sed 's/ ;/;/g'
+   [[ $cc == "" ]] || echo https://git.code.sf.net/p/$r/code$cc|sed 's/ ;/;/g'; 
+    done | gzip > sf$DT.prj.$i.heads &
+done
+
 #now do for existing
 zcat sf$PDT.prj.*.heads
 
@@ -179,5 +183,6 @@ done
 
 wait
 
-
+#dump all the collected mongo data
+#mongodump 
 #${un[$i]} ${ps[$i]} 
