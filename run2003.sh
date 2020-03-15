@@ -1,4 +1,7 @@
 #!/bin/bash
+
+#
+
 PDT=201910
 PDTdash=2019-10-01
 DT=202003
@@ -16,7 +19,9 @@ do ptt=$(date -d"@"$(($PT+($i-1)*$inc)) +"%Y-%m-%d")
    echo $(head -$i tokens|tail -1) $ptt $tt 
 done > tokens_date
 
-cat tokens_date | while read r; do echo $r | python3 ghUpdatedRepos.py gh$DT repos  &> ghReposList$(echo $r | cut -d ' ' -f2).updt & done
+for i in {1..9}; do (r=$(head -$i tokens_date|tail -1); echo $r | python3 ghUpdatedRepos.py gh$DT repos  &> ghReposList$(echo $r | cut -d ' ' -f2).updt) & done
+
+
 
 # BB: need to extract all, no way to check for updated ones
 #python3 bbRepos.py 1980-01-01 bitbucket$DT 2013-00-01 &> bbRepos${DT}0.out &
