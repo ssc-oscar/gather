@@ -42,7 +42,7 @@ query = '''{
     remaining
     resetAt
   }
-  search(query: "is:public archived:false fork:false mirror:false pushed:%s..%s", type: REPOSITORY, first: 100) {
+  search(query: "is:public archived:false fork:true mirror:false pushed:%s..%s", type: REPOSITORY, first: 100) {
     repositoryCount
     pageInfo {
       hasNextPage

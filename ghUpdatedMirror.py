@@ -42,7 +42,7 @@ query = '''{
     remaining
     resetAt
   }
-  search(query: "is:public archived:false fork:false mirror:false pushed:%s..%s", type: REPOSITORY, first: 100) {
+  search(query: "is:public archived:false mirror:true", type: REPOSITORY, first: 100) {
     repositoryCount
     pageInfo {
       hasNextPage
@@ -56,7 +56,9 @@ query = '''{
           createdAt
           pushedAt
           id
-			 forkCount
+          forkCount
+          isMirror
+          parent { nameWithOwner }
           description
         }
       }
@@ -87,52 +89,46 @@ def gatherData (res):
 
 # driver loop that iterates through repos in 10 minute intervals
 # iterates from the specified date up to the current time
-while (interval < end_time):
-  fromStr = interval.strftime("%Y-%m-%dT%H:%M:%SZ")
-  toStr = (interval + timedelta(minutes=10)).strftime("%Y-%m-%dT%H:%M:%SZ")
-  nextQuery = query % (fromStr, toStr)
-  jsonS['query'] = nextQuery
+nextQuery = query
+jsonS['query'] = nextQuery
 
-  if (token == ''):
-    print("Please provide your Github API token in the script. Exiting.")
-    sys.exit()
+if (token == ''):
+  print("Please provide your Github API token in the script. Exiting.")
+  sys.exit()
 
-  r = requests.post(url=url, json=jsonS, headers=headers)
-  if r.ok:
-    try:
-      print("did it come here?")
-      res = json.loads(r.content)
-      remaining = res['data']['rateLimit']['remaining']
-      reset = res['data']['rateLimit']['resetAt']
-      if remaining < 11:
-        wait(reset)
+r = requests.post(url=url, json=jsonS, headers=headers)
+if r.ok:
+  try:
+    print("did it come here?")
+    res = json.loads(r.content)
+    remaining = res['data']['rateLimit']['remaining']
+    reset = res['data']['rateLimit']['resetAt']
+    if remaining < 11:
+      wait(reset)
 
-      repos = res['data']['search']['repositoryCount']
-      hasNextPage = res['data']['search']['pageInfo']['hasNextPage']
-      gatherData(res)
+    repos = res['data']['search']['repositoryCount']
+    hasNextPage = res['data']['search']['pageInfo']['hasNextPage']
+    gatherData(res)
 
-      # check if we got more than 100 results and need to paginate
-      while (repos > 100 and hasNextPage):
-        endCursor = res['data']['search']['pageInfo']['endCursor']
-        print("Have to paginate, using cursor {}".format(endCursor))
-        index = nextQuery.find("REPOSITORY") + len("REPOSITORY")
-        pageQuery = nextQuery[:index] + ',after:"{}"'.format(endCursor) + nextQuery[index:]
-        jsonS['query'] = pageQuery
+    # check if we got more than 100 results and need to paginate
+    while (repos > 100 and hasNextPage):
+      endCursor = res['data']['search']['pageInfo']['endCursor']
+      print("Have to paginate, using cursor {}".format(endCursor))
+      index = nextQuery.find("REPOSITORY") + len("REPOSITORY")
+      pageQuery = nextQuery[:index] + ',after:"{}"'.format(endCursor) + nextQuery[index:]
+      jsonS['query'] = pageQuery
 
-        r = requests.post(url=url, json=jsonS, headers=headers)
-        if r.ok:
-          res = json.loads(r.text)
-          try:
-            remaining = res['data']['rateLimit']['remaining']
-            reset = res['data']['rateLimit']['resetAt']
-            if remaining < 11:
-              wait(reset)
-            repos = res['data']['search']['repositoryCount']
-            hasNextPage = res['data']['search']['pageInfo']['hasNextPage']
-            gatherData(res)
-          except Exception as e:
-            print(e)
-    except Exception as e:
-      print(e)
-  interval += timedelta(minutes=10)
-
+      r = requests.post(url=url, json=jsonS, headers=headers)
+      if r.ok:
+        res = json.loads(r.text)
+        try:
+          remaining = res['data']['rateLimit']['remaining']
+          reset = res['data']['rateLimit']['resetAt']
+          if remaining < 11:
+            wait(reset)
+          repos = res['data']['search']['repositoryCount']
+          hasNextPage = res['data']['search']['pageInfo']['hasNextPage']
+          gatherData(res)
+        except Exception as e:
+          print(e)
+  except Exception as e:
