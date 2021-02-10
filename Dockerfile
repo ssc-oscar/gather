@@ -6,7 +6,7 @@ USER root
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN apt update && DEBIAN_FRONTEND='noninteractive' apt install -y  curl gnupg apt-transport-https
+RUN apt update && DEBIAN_FRONTEND='noninteractive' apt install -y wget curl gnupg apt-transport-https
 
 #mongodb
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4 
