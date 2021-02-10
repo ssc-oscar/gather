@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:bionic
 
 MAINTAINER Audris Mockus <audris@mockus.org>
 
@@ -6,15 +6,18 @@ USER root
 
 ARG DEBIAN_FRONTEND=noninteractive
 
+RUN groupadd -r mongodb && useradd -r -g mongodb mongodb
+
 RUN apt update && DEBIAN_FRONTEND='noninteractive' apt install -y wget curl gnupg apt-transport-https
 
 #mongodb
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4 
 RUN wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | apt-key add -
-RUN echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+RUN echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list
 #RUN echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 multiverse" > /etc/apt/sources.list.d/mongodb-org-4.0.list
 RUN apt update && \
-    apt install -y mongodb-org-shell  \
+    ln -s /bin/true /usr/local/bin/systemctl && \
+	 apt install -y mongodb-org-shell mongodb-org-server \
     mongodb-org-tools mongodb-org-mongos \
     libssl-dev \
     libcurl4-openssl-dev \
@@ -28,6 +31,7 @@ RUN apt update && \
     vim-runtime tmux zsh zip \
     python3-pymongo python3-requests \ 
 	&& rm -rf /var/lib/apt/lists/* \
+	&& rm -f /usr/local/bin/systemctl \
 	&& rm -rf /var/lib/mongodb \
 	&& mv /etc/mongod.conf /etc/mongod.conf.orig
 
