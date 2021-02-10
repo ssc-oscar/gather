@@ -10,9 +10,11 @@ RUN apt update && DEBIAN_FRONTEND='noninteractive' apt install -y  curl gnupg ap
 
 #mongodb
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4 
-RUN echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 multiverse" > /etc/apt/sources.list.d/mongodb-org-4.0.list
+RUN wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | apt-key add -
+RUN echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+#RUN echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 multiverse" > /etc/apt/sources.list.d/mongodb-org-4.0.list
 RUN apt update && \
-    apt install -y mongodb-org-shell mongodb-org-server \
+    apt install -y mongodb-org-shell  \
     mongodb-org-tools mongodb-org-mongos \
     libssl-dev \
     libcurl4-openssl-dev \

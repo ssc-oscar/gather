@@ -1,9 +1,14 @@
 #!/bin/bash
 
-#use E2 2cpu 8GB
+#use E2 4cpu 16GB
 #container swsc/gather
 #docker run -d -p443:22 -v /home/audris:/home/audris -w /home/audris swsc/gather bash
-
+#Once container is created,
+#  add tokens to /data/gather,
+#  add id_rsagihub to ~/.ssh and
+# do git ls-remote for each of the forges to avoid yes/no question (alternatively, add options to config to prevent that)
+#A command line to start container on gcp allow https
+# docker run -d -v /home/audris/gather:/data/gather -w /home/audris -p443:22 --name gather audris/gather /bin/startDef.sh audris
 
 PDT=202009
 PDTdash=2020-09-01
@@ -23,8 +28,6 @@ do ptt=$(date -d"@"$(($PT+($i-1)*$inc)) +"%Y-%m-%d")
 done > tokens_date
 
 for i in {1..9}; do (r=$(head -$i tokens_date|tail -1); echo $r | python3 ghUpdatedRepos.py gh$DT repos  &> ghReposList$(echo $r | cut -d ' ' -f2).updt) & done
-
-
 
 # BB: need to extract all, no way to check for updated ones
 python3 bbRepos.py 1980-01-01 bitbucket$DT 2013-00-01 &> bbRepos${DT}1.out &
