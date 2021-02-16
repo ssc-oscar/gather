@@ -1,19 +1,25 @@
 #!/bin/bash
 
-#use E2 4cpu 16GB
+#use E2 8cpu 32GB
 #container swsc/gather
-#docker run -d -p443:22 -v /home/audris:/home/audris -w /home/audris swsc/gather bash
 #Once container is created,
 #  add tokens to /data/gather,
 #  add id_rsagihub to ~/.ssh and
 # do git ls-remote for each of the forges to avoid yes/no question (alternatively, add options to config to prevent that)
 #A command line to start container on gcp allow https
-# docker run -d -v /home/audris/gather:/data/gather -w /home/audris -p443:22 --name gather audris/gather /bin/startDef.sh audris
+# sudo docker run -d -v /home/audris/gather:/data/gather -w /home/audris -p443:22 --name gather audris/gather /bin/startDef.sh audris
+
+git ls-remote bb:swsc/lookup
+git ls-remote gh:fdac20/news
+git ls-remote gl:inkscape/inkscape
+git ls-remote gl_gnome:gnome/gtk
+git ls-remote dr:
+git ls-remote deb:
 
 PDT=202009
 PDTdash=2020-09-01
 DT=202102
-DTdash=2020-02-10
+DTdash=2021-02-10
 
 PT=$(date -d"$PDTdash" +%s)
 T=$(date -d"$DTdash" +%s)
@@ -34,19 +40,19 @@ python3 bbRepos.py 1980-01-01 bitbucket$DT 2013-00-01 &> bbRepos${DT}1.out &
 python3 bbRepos.py 2013-01-01 bitbucket$DT 2014-05-03 &> bbRepos${DT}2.out &
 python3 bbRepos.py 2014-05-03 bitbucket$DT 2015-05-03 &> bbRepos${DT}3.out &
 python3 bbRepos.py 2015-05-03 bitbucket$DT 2016-05-03 &> bbRepos${DT}4.out &
-python3 bbRepos.py 2015-05-03 bitbucket$DT 2016-05-03 &> bbRepos${DT}5.out &
-python3 bbRepos.py 2016-05-03 bitbucket$DT 2017-05-03 &> bbRepos${DT}6.out &
-python3 bbRepos.py 2017-05-03 bitbucket$DT 2018-05-03 &> bbRepos${DT}7.out &
-python3 bbRepos.py 2018-05-03 bitbucket$DT 2019-05-03 &> bbRepos${DT}8.out &
-python3 bbRepos.py 2019-05-03 bitbucket$DT 2020-03-01 &> bbRepos${DT}9.out &
+python3 bbRepos.py 2016-05-03 bitbucket$DT 2017-05-03 &> bbRepos${DT}5.out &
+python3 bbRepos.py 2017-05-03 bitbucket$DT 2018-05-03 &> bbRepos${DT}6.out &
+python3 bbRepos.py 2018-05-03 bitbucket$DT 2019-05-03 &> bbRepos${DT}7.out &
+python3 bbRepos.py 2019-05-03 bitbucket$DT 2020-05-01 &> bbRepos${DT}8.out &
+python3 bbRepos.py 2020-05-03 bitbucket$DT 2021-05-01 &> bbRepos${DT}9.out &
 #get only new, use heads for existing repos
-python3 bbRepos.py $PDTdash bitbucket$DT 2022-05-03 &> bbRepos${DT}0.out &
+#python3 bbRepos.py $PDTdash bitbucket$DT 2022-05-03 &> bbRepos${DT}0.out &
 
 
 # SF 
 python3 sfRepos.py sf$DT repos 
 python3 listU.py sf$DT repos '{}' url | sed "s|b'https://sourceforge.net/projects/||;s|'$||;" | sort -u > sf$DT.prj
-join -v1 sf$DT.prj sf$PDT.prj > sf$DT.prj.new
+#join -v1 sf$DT.prj sf$PDT.prj > sf$DT.prj.new
 
 #python3 extractSfGit.py sf201813 repos &>> sf201813.out
 
@@ -76,18 +82,100 @@ cat bioconductor.org.$DT | \
 while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; 
 done | gzip > bioconductor.org.$DT.heads &
 
+
+wget "https://blitiri.com.ar/git/"  -O blitiri.com.ar.html
+grep '<td class="name"><a href="' blitiri.com.ar.html|sed 's|^\s*<td class="name"><a href="||;s|".*||' | sort -u | awk '{print "https://blitiri.com.ar/git/"$1}' > blitiri.com.ar.$DT
+
+u=fedorapeople.org
+wget "https://$u"  -O  $u.html
+grep 'Git repositories' $u.html|sed 's|<a href="||;s|".*||' | sort -u > $u.$DT
+
+u=code.qt.io
+wget "https://$u/cgit/"  -O  $u.html
+grep 'toplevel-repo' $u.html| sed "s|.*href='/cgit/|/cgit/|;s|'.*||"|sort -u | awk '{print "https://'$u'"$1}' > $u.$DT
+
+u=git.alpinelinux.org
+wget "https://$u" -O $u.html
+grep 'toplevel-repo' $u.html | sed "s|.*href='/|/|;s|'.*||"|sort -u | awk '{print "https://'$u'"$1}' > $u.$DT
+
+u=git.openembedded.org 
+wget "https://$u" -O $u.html
+grep 'toplevel-repo' $u.html | sed "s|.*' href='/|/|;s|'.*||"|sort -u | awk '{print "https://'$u'"$1}' > $u.$DT
+
+for u in git.torproject.org git.xfce.org git.yoctoproject.org
+do wget "https://$u" -O $u.html
+grep -E '(sublevel|toplevel)-repo' $u.html | sed "s|.*' href='/|/|;s|'.*||"|sort -u | awk '{print "https://'$u'"$1}' > $u.$DT
+done
+
 wget "https://repo.or.cz/?a=project_list" -O cz.html
 grep '\.git' cz.html  | sed 's|.*"/\([^/"]*\.git\).*|\1|' | uniq | sort -u | awk '{print "https://repo.or.cz/"$1}'> repo.or.cz.$DT
 cat repo.or.cz.$DT | \
 while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; 
 done | gzip > repo.or.cz.$DT.heads &
 
-wget https://invent.kde.org/ -O kde.html ### need to go over pages, many projects on github
-grep '\.git' kde.html  |  sed "s|.*href='/\([^']*\.git\).*|\1|" | \
-   uniq | sort -u | awk '{print "https://anongit.kde.org/"$1}'> cgit.kde.org.$DT
+
+wget "https://gitbox.apache.org/repos/asf" -O gitbox.apache.org.html
+grep '<td><a href="/repos/asf/[^\?]' gitbox.apache.org.html|sed 's|.*<td><a href="/||;s|".*||' | sort -u | awk '{print "https://gitbox.apache.org/"$1}' > gitbox.apache.org.$DT
+
+echo https://gcc.gnu.org/git/gcc.git > gcc.git.$DT
+
+for i in {1..50}
+do wget "https://pagure.io/?page=$i&sorting=None" -O pagure.io.html
+   grep '^\s*<a href="/' pagure.io.html |sed 's|^\s*<a href="||;s|".*||'|grep -Ev '^/(about|ssh_info)$' 
+done | uniq | sort -u | awk '{print "https://pagure.io"$1}' > pagure.io.$DT 
+
+u=notabug.org	 
+for i in {1..50}
+do wget "https://$u/explore/repos?page=$i&q=" -O $u.html
+   grep '<a class="name" href="/' $u.html |sed 's|<a class="name" href="/|/|;s|".*||'
+done |sort -u | awk '{print "https://'$u'"$1}' >  $u.$DT
+   
+for u in framagit.org gitlab.adullact.net code.ill.fr forgemia.inra.fr git.unicaen.fr git.unistra.fr git.pleroma.social gitlab.fing.edu.uy gitlab.huma-num.fr  gitlab.irstea.fr gitlab.cerema.fr gite.lirmm.fr gitlab.common-lisp.net 
+do for i in {1..50}
+do sleep 2; wget "https://$u/explore/projects?non_archived=true&page=$i&sort=name_asc" -O $u.html
+   grep '<a class="project" href="' $u.html | sed 's|<a class="project" href="||;s|".*||' 
+done | uniq | sort -u | awk '{print "https://'$u'"$1}' >  $u.$DT  
+done
+
+for u in gitlab.freedesktop.org gitlab.inria.fr gitlab.ow2.org 0xacab.org invent.kde.org
+do for i in {1..50}
+do sleep 2; wget "https://$u/explore/projects?non_archived=true&page=$i&sort=name_asc" -O $u.html
+   grep '<a class="project" href="' $u.html | sed 's|<a class="project" href="||;s|".*||' 
+done | uniq | sort -u | awk '{print "https://'$u'"$1}' >  $u.a.$DT  
+for i in {1..50}
+do sleep 2; wget "https://$u/explore/projects/starred?non_archived=true&page=$i&sort=name_asc" -O $u.html
+   grep '<a class="project" href="' $u.html | sed 's|<a class="project" href="||;s|".*||' 
+done | uniq | sort -u | awk '{print "https://'$u'"$1}' >  $u.s.$DT  
+for i in {1..50}
+do sleep 2; wget "https://$u/explore/projects/starred/trending?non_archived=true&page=$i&sort=name_asc" -O $u.html
+   grep '<a class="project" href="' $u.html | sed 's|<a class="project" href="||;s|".*||' 
+done | uniq | sort -u | awk '{print "https://'$u'"$1}' >  $u.t.$DT  
+cat $u.?.$DT | sort -u > $u.$DT 
+done
+
+for i in {1..50}
+do sleep 2; wget "https://invent.kde.org/explore/projects?page=$i&sort=name_asc"  -O kde.htm
+   grep '<a class="project" href="' kde.htm | sed 's|<a class="project" href="||;s|".*||'
+done | uniq | sort -u | awk '{print "https://invent.kde.org"$1}' >  cgit.kde.org.a.$DT  
+for i in {1..50}
+do sleep 2; wget "https://invent.kde.org/explore/projects/starred?page=$i&sort=name_asc"  -O kdes.htm
+   grep '<a class="project" href="' kdes.htm | sed 's|<a class="project" href="||;s|".*||'
+done | uniq | sort -u | awk '{print "https://invent.kde.org"$1}' >  cgit.kde.org.s.$DT  
+for i in {1..50}
+do sleep 2; wget "https://invent.kde.org/explore/projects/trending?page=$i&sort=name_asc"  -O kdet.htm
+   grep '<a class="project" href="' kdet.htm | sed 's|<a class="project" href="||;s|".*||'
+done | uniq | sort -u | awk '{print "https://invent.kde.org"$1}' >  cgit.kde.org.t.$DT  
+cat cgit.kde.org.[ast].$DT |sort -u >  cgit.kde.org.$DT
 cat cgit.kde.org.$DT | \
-while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; 
+while read r; do r="$r.git";a=$(git ls-remote $r.git | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; 
 done | gzip > cgit.kde.org.$DT.heads &
+
+
+#repo.or.cz.$DT gitlab.gnome.org.$DT android.googlesource.com.$DT git.zx2c4.com.$DT git.eclipse.org.$DT git.kernel.org.$DT git.savannah.gnu.org.$DT git.savannah.nongnu.org.$DT
+
+for i in pagure.io.$DT blitiri.com.ar.$DT code.qt.io.$DT gitlab.common-lisp.net.$DT code.ill.fr.$DT forgemia.inra.fr.$DT git.unicaen.fr.$DT notabug.org.$DT git.unistra.fr.$DT gcc.git.$DT git.pleroma.social.$DT gitlab.fing.edu.uy.$DT gitlab.huma-num.fr.$DT gitlab.adullact.net.$DT gitlab.irstea.fr.$DT git.alpinelinux.org.$DT gitlab.cerema.fr.$DT git.openembedded.org.$DT gite.lirmm.fr.$DT git.torproject.org.$DT git.xfce.org.$DT git.yoctoproject.org.$DT framagit.org.$DT fedorapeople.org.$DT gitlab.freedesktop.org.$DT gitlab.inria.fr.$DT gitlab.ow2.org.$DT gitbox.apache.org.$DT
+do (sed 's|//|a:a@|' $i | while read r; do a=$(git ls-remote "$r" | awk '{print ";"$1}'); echo "$r$a"|sed 's/ //g'; done| gzip > $i.heads; sleep 2) &
+done 
 
 # pages 1-300
 # https://gitlab.gnome.org/explore/projects?page=300&sort=latest_activity_desc
@@ -107,7 +195,7 @@ done > git.debian.org.$DT.$of &
 done
 wait
 for of in {0..9}; do
-cat git.debian.org.$DT.$of | while read r; do a=$(git ls-remote $r 2> err | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; sleep 2; done | gzip > git.debian.org.$DT.$of.heads 
+cat git.debian.org.$DT.$of | while read r; do a=$(git ls-remote $r 2> err | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; sleep 20; done | gzip > git.debian.org.$DT.$of.heads 
 done
 
 
@@ -192,8 +280,10 @@ cat  gl$DT.new | sed 's|https://gitlab.com/|gl:|' | while read r; do a=$(git ls-
 done | gzip > gl$DT.new.heads &
 
 # Get updated, no-forks for GH
-python3 listU.py gh$DT repos '{"isFork" : false}' nameWithOwner | sed "s|^b'||;s|'$||" | sort -u > gh$DT.u
-split -n l/30 -da2 gh$DT.u gh$DT.u.
+#python3 listU.py gh$DT repos '{"isFork" : false}' nameWithOwner | sed "s|^b'||;s|'$||" | sort -u > gh$DT.u
+python3 listU.py gh$DT repos '{}' nameWithOwner | sed "s|^b'||;s|'$||" | sort -u > gh$DT.u
+cat gh$PDT.u.* | sort -t\; | join -t\; -v2 - gh$DT.u > gh$DT.new.u
+split -n l/30 -da2 gh$DT.new.u gh$DT.u.
 for j in {00..29}
 do cat gh$DT.u.$j | while read r; do
     a=$(git ls-remote gh:$r | awk '{print ";"$1}'); echo gh:$r$a | sed 's/ //g';
