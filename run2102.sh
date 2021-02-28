@@ -153,22 +153,9 @@ done | uniq | sort -u | awk '{print "https://'$u'"$1}' >  $u.t.$DT
 cat $u.?.$DT | sort -u > $u.$DT 
 done
 
-for i in {1..50}
-do sleep 2; wget "https://invent.kde.org/explore/projects?page=$i&sort=name_asc"  -O kde.htm
-   grep '<a class="project" href="' kde.htm | sed 's|<a class="project" href="||;s|".*||'
-done | uniq | sort -u | awk '{print "https://invent.kde.org"$1}' >  cgit.kde.org.a.$DT  
-for i in {1..50}
-do sleep 2; wget "https://invent.kde.org/explore/projects/starred?page=$i&sort=name_asc"  -O kdes.htm
-   grep '<a class="project" href="' kdes.htm | sed 's|<a class="project" href="||;s|".*||'
-done | uniq | sort -u | awk '{print "https://invent.kde.org"$1}' >  cgit.kde.org.s.$DT  
-for i in {1..50}
-do sleep 2; wget "https://invent.kde.org/explore/projects/trending?page=$i&sort=name_asc"  -O kdet.htm
-   grep '<a class="project" href="' kdet.htm | sed 's|<a class="project" href="||;s|".*||'
-done | uniq | sort -u | awk '{print "https://invent.kde.org"$1}' >  cgit.kde.org.t.$DT  
-cat cgit.kde.org.[ast].$DT |sort -u >  cgit.kde.org.$DT
-cat cgit.kde.org.$DT | \
+cat invent.kde.org.$DT | \
 while read r; do r="$r.git";a=$(git ls-remote $r.git | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; 
-done | gzip > cgit.kde.org.$DT.heads &
+done | gzip > invent.kde.org.$DT.heads &
 
 
 #repo.or.cz.$DT gitlab.gnome.org.$DT android.googlesource.com.$DT git.zx2c4.com.$DT git.eclipse.org.$DT git.kernel.org.$DT git.savannah.gnu.org.$DT git.savannah.nongnu.org.$DT
