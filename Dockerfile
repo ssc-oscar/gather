@@ -56,6 +56,6 @@ ENV HOME /home/$NB_USER
 RUN groupadd -g $NB_GID da
 RUN useradd -m -s /bin/bash -N -u $NB_UID -g $NB_GID $NB_USER && mkdir $HOME/.ssh && chown -R $NB_USER:users $HOME 
 COPY id_rsa_gcloud.pub $HOME/.ssh/authorized_keys
-COPY config $HOME/.ssh/
+COPY ssh_config $HOME/.ssh/config
 COPY run*.sh *.py /home/$NB_USER/ 
 RUN chown -R $NB_USER:users $HOME && chmod -R og-rwx $HOME/.ssh
