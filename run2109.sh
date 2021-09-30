@@ -12,6 +12,19 @@
 # A command line to start container on gcp allow https
 #  sudo docker run -d -v /home/audris/gather:/data/gather -w /home/audris -p443:22 --name gather audris/gather /bin/startDef.sh audris
 
+
+#  --- Do everything by running on da servers (in tmux/screen) and connected to gcp via
+#ssh gc
+#
+#To forward mongodb have in your ~/.ssh/config
+#
+#host gc
+#   user YourID
+#   hostname GCPIP
+#   RemoteForward 27017 da1.eecs.utk.edu:27017
+#   port 443
+#   IdentityFile ~/.ssh/id_rsa_gcloud     
+
 git ls-remote bb:swsc/lookup
 git ls-remote gh:fdac20/news
 git ls-remote gl:inkscape/inkscape
