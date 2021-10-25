@@ -2,7 +2,7 @@
 
 # add php for next collection http://git.php.net/
 
-# on GCP use E2 8cpu 32GB
+# on GCP use E2 8cpu 32GB, have at least 100Gb disk and check periodicly not to run it over
 # container swsc/gather
 # Once container is created,
 #   add tokens to /data/gather,
@@ -24,6 +24,14 @@
 #   RemoteForward 27017 da1.eecs.utk.edu:27017
 #   port 443
 #   IdentityFile ~/.ssh/id_rsa_gcloud     
+
+# in the first stage bbRepos.py, glRepos.py, and ghUpdatedRepos.py populate mongodb, which is then used to
+# get project list, while the rest populate project list into XXXX.$DT
+# all XXXX.$DT need to be copied to da cluster
+
+# in the second stage the check for latest objects is produced vi ls-relote
+# second stage typically requires a much larger disk to store *.heads
+# all *.heads need to be copied to da cluster
 
 git ls-remote bb:swsc/lookup
 git ls-remote gh:fdac20/news
@@ -201,7 +209,7 @@ for of in {0..9}; do
 cat git.debian.org.$DT.$of | while read r; do a=$(git ls-remote $r 2> err | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; sleep 20; done | gzip > git.debian.org.$DT.$of.heads 
 done
 
-
+sort=name_desc
 # Add following forges as well
 # android.git.kernel.org ??
 
@@ -209,18 +217,38 @@ done
 thost="https://git.drupalcode.org/explore/projects?page="
 i=0
 rm drupal.org
-while :
-do i=$(($i+1));
-rhost="$thost$i";
-curl -o drupal.html  $rhost;
-#if j==-1,this is invalid page,we have gotten all pages successfully. 
-j=$(perl -e '$e=0;while(<STDIN>){if(m|<h5>This user doesn|){$e=-1;last;};}; print "$e\n"' < drupal.html);
-if [ "$j" -eq "-1" ]; then break; fi;
-#all urls will be stored in ./drupal.com
-perl -ane 'while(m|<span class="project-name">([^<]*)</span>|g){print "https://git.drupalcode.org/project/$1\n"}' < drupal.html>> drupal.com.$DT;
-if [ `expr $i % 10` -eq 0 ]; then  sleep 2; fi;
-done  
-sed  's|.*/project/|dr:project/|' drupal.com.$DT | sort -u | \
+for i in {1..50}
+do 
+ rhost="$thost$i".'&sort=latest_activity_desc';
+ curl -o drupal0.html  $rhost;
+ rhost="$thost$i".'&sort=latest_activity_asc';
+ curl -o drupal1.html  $rhost;
+ rhost="$thost$i".'&sort=created_desc';
+ curl -o drupal2.html  $rhost;
+ rhost="$thost$i".'&sort=created_asc';
+ curl -o drupal3.html  $rhost;
+ rhost="$thost$i".'&sort=name_asc';
+ curl -o drupal4.html  $rhost;
+ rhost="$thost$i".'&sort=name_desc';
+ curl -o drupal5.html  $rhost;
+ rhost="$thost$i".'&sort=stars_desc';
+ curl -o drupal6.html  $rhost;
+ rhost="$thost$i".'&sort=stars_asc';
+ curl -o drupal7.html  $rhost;
+
+ #if j==-1,this is invalid page,we have gotten all pages successfully. 
+ for t in {0..7}
+ do j=$(perl -e '$e=0;while(<STDIN>){if(m|<h5>This user doesn|){$e=-1;last;};}; print "$e\n"' < drupal$t.html);
+  if [ "$j" -eq "-1" ]; then break; fi;
+  #all urls will be stored in ./drupal.com
+  perl -ane 'while(m|<span class="project-name">([^<]*)</span>|g){print "https://git.drupalcode.org/project/$1\n"}' < drupal$t.html >> drupal.com.$DT;
+  if [ `expr $i % 10` -eq 0 ]; then  sleep 2; fi;
+ done
+done
+
+sort -u  drupal.com.$DT > drupal.com.$DT.u
+mv drupal.com.$DT.u drupal.com.$DT
+cat drupal.com.$DT| sed  's|.*/project/|dr:project/|'  | \
 while read r; do git ls-remote $r | grep -E 'refs/heads|HEAD' | sed 's|\s*refs/heads/|;|;s|\s*HEAD|;HEAD|;s|^|'$r';|';
 done | gzip > drupal.com.$DT.heads &
 
