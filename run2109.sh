@@ -70,7 +70,7 @@ python3 bbRepos.py 2018-05-03 bitbucket$DT 2019-05-03 &> bbRepos${DT}7.out &
 python3 bbRepos.py 2019-05-03 bitbucket$DT 2020-05-01 &> bbRepos${DT}8.out &
 python3 bbRepos.py 2020-05-03 bitbucket$DT 2021-05-01 &> bbRepos${DT}9.out &
 #get only new, use heads for existing repos
-#python3 bbRepos.py $PDTdash bitbucket$DT 2022-05-03 &> bbRepos${DT}0.out &
+python3 bbRepos.py 2021-05-01 bitbucket$DT 2022-05-03 &> bbRepos${DT}0.out &
 
 
 # SF 

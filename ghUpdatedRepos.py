@@ -100,8 +100,8 @@ while (interval < end_time):
   r = requests.post(url=url, json=jsonS, headers=headers)
   if r.ok:
     try:
-      print("did it come here?")
       res = json.loads(r.content)
+      print("did it come here? {}".format(res['data']['search']['pageInfo']))
       remaining = res['data']['rateLimit']['remaining']
       reset = res['data']['rateLimit']['resetAt']
       if remaining < 11:
