@@ -161,20 +161,27 @@ do sleep 2; wget "https://$u/explore/projects?non_archived=true&page=$i&sort=nam
 done | uniq | sort -u | awk '{print "https://'$u'"$1}' >  $u.$DT  
 done
 
-for u in gitlab.freedesktop.org gitlab.inria.fr gitlab.ow2.org 0xacab.org invent.kde.org
+for u in gitlab.freedesktop.org gitlab.inria.fr gitlab.ow2.org 0xacab.org invent.kde.org 
 do for i in {1..50}
-do sleep 2; wget "https://$u/explore/projects?non_archived=true&page=$i&sort=name_asc" -O $u.html
-   grep '<a class="project" href="' $u.html | sed 's|<a class="project" href="||;s|".*||' 
-done | uniq | sort -u | awk '{print "https://'$u'"$1}' >  $u.a.$DT  
-for i in {1..50}
-do sleep 2; wget "https://$u/explore/projects/starred?non_archived=true&page=$i&sort=name_asc" -O $u.html
-   grep '<a class="project" href="' $u.html | sed 's|<a class="project" href="||;s|".*||' 
-done | uniq | sort -u | awk '{print "https://'$u'"$1}' >  $u.s.$DT  
-for i in {1..50}
-do sleep 2; wget "https://$u/explore/projects/starred/trending?non_archived=true&page=$i&sort=name_asc" -O $u.html
-   grep '<a class="project" href="' $u.html | sed 's|<a class="project" href="||;s|".*||' 
-done | uniq | sort -u | awk '{print "https://'$u'"$1}' >  $u.t.$DT  
-cat $u.?.$DT | sort -u > $u.$DT 
+   do for o in latest_activity_desc name_asc name_desc created_desc created_asc 
+      do sleep 2; wget "https://$u/explore/projects?non_archived=true&page=$i&sort=$o" -O $u.html
+       grep '<a class="project" href="' $u.html | sed 's|<a class="project" href="||;s|".*||' 
+      done
+   done | uniq | sort -u | awk '{print "https://'$u'"$1}' >  $u.a.$DT  
+   for i in {1..50}
+   do for o in latest_activity_desc name_asc name_desc created_desc created_asc
+     do sleep 2; wget "https://$u/explore/projects/starred?non_archived=true&page=$i&sort=name_asc" -O $u.html
+      grep '<a class="project" href="' $u.html | sed 's|<a class="project" href="||;s|".*||'
+     done
+   done | uniq | sort -u | awk '{print "https://'$u'"$1}' >  $u.s.$DT  
+   for i in {1..50}
+   do for o in latest_activity_desc name_asc name_desc created_desc created_asc
+     do sleep 2; wget "https://$u/explore/projects/trending?non_archived=true&page=$i&sort=name_asc" -O $u.html
+        grep '<a class="project" href="' $u.html | sed 's|<a class="project" href="||;s|".*||' 
+      done
+   done | uniq | sort -u | awk '{print "https://'$u'"$1}' >  $u.t.$DT  
+
+   cat $u.?.$DT | sort -u > $u.$DT 
 done
 
 cat invent.kde.org.$DT | \
@@ -306,20 +313,27 @@ wait
 
 
 # Get update repos for GL
-python3 listU.py gl$DT repos '{ "last_activity_at" : { "$gt" : "'"$PDTdash"'" }}' http_url_to_repo | sed "s|^b'||;s|'$||" > gl$DT.new 
+python3 listU.py gl$DT repos '{ "last_activity_at" : { "$gt" : "'"$PDTdash"'" }}' http_url_to_repo | sed "s|^b'||;s|'$||"|sort -u > gl$DT.new 
 cat  gl$DT.new | sed 's|https://gitlab.com/|gl:|' | while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; 
 done | gzip > gl$DT.new.heads &
 
 # Get updated, no-forks for GH
 #python3 listU.py gh$DT repos '{"isFork" : false}' nameWithOwner | sed "s|^b'||;s|'$||" | sort -u > gh$DT.u
-python3 listU.py gh$DT repos '{}' nameWithOwner | sed "s|^b'||;s|'$||" | sort -u > gh$DT.u
-cat gh$PDT.u.* | sort -t\; | join -t\; -v2 - gh$DT.u > gh$DT.new.u
+python3 listU.py gh$DT repos '{ "pushed_at" : { "$gt" : "'"$PDTdash"'"}' nameWithOwner | sed "s|^b'||;s|'$||" | sort -u > gh$DT.u
+cat gh$PDT.u.*[0-9] | sort -t\; | join -t\; -v2 - gh$DT.u > gh$DT.new.u
 split -n l/30 -da2 gh$DT.new.u gh$DT.u.
 for j in {00..29}
 do cat gh$DT.u.$j | while read r; do
     a=$(git ls-remote gh:$r | awk '{print ";"$1}'); echo gh:$r$a | sed 's/ //g';
   done | gzip > gh$DT.u.$j.heads &
 done
+
+for j in {00..29}
+do tac gh$DT.u.$j | while read r; do
+    a=$(git ls-remote gh:$r | awk '{print ";"$1}'); echo gh:$r$a | sed 's/ //g';
+  done | gzip > gh$DT.u.$j.headsr &
+done
+
 
 # Get updated bb (do heads on all 2M?)
 python3 listU.py bitbucket$DT repos '{ "updated_on" : { "$gt" : "'"$PDTdash"'" } }' full_name | \
