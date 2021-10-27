@@ -192,7 +192,7 @@ done | gzip > invent.kde.org.$DT.heads &
 #repo.or.cz.$DT gitlab.gnome.org.$DT android.googlesource.com.$DT git.zx2c4.com.$DT git.eclipse.org.$DT git.kernel.org.$DT git.savannah.gnu.org.$DT git.savannah.nongnu.org.$DT
 
 for i in pagure.io.$DT blitiri.com.ar.$DT code.qt.io.$DT gitlab.common-lisp.net.$DT code.ill.fr.$DT forgemia.inra.fr.$DT git.unicaen.fr.$DT notabug.org.$DT git.unistra.fr.$DT gcc.git.$DT git.pleroma.social.$DT gitlab.fing.edu.uy.$DT gitlab.huma-num.fr.$DT gitlab.adullact.net.$DT gitlab.irstea.fr.$DT git.alpinelinux.org.$DT gitlab.cerema.fr.$DT git.openembedded.org.$DT gite.lirmm.fr.$DT git.torproject.org.$DT git.xfce.org.$DT git.yoctoproject.org.$DT framagit.org.$DT fedorapeople.org.$DT gitlab.freedesktop.org.$DT gitlab.inria.fr.$DT gitlab.ow2.org.$DT gitbox.apache.org.$DT
-do (sed 's|//|a:a@|' $i | while read r; do a=$(git ls-remote "$r" | awk '{print ";"$1}'); echo "$r$a"|sed 's/ //g'; done| gzip > $i.heads; sleep 2) &
+do (sed 's|//|//a:a@|' $i | while read r; do a=$(git ls-remote "$r" | awk '{print ";"$1}'); echo "$r$a"|sed 's/ //g'; done| gzip > $i.heads; sleep 2) &
 done 
 
 # pages 1-300
