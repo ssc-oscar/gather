@@ -190,10 +190,18 @@ done | gzip > invent.kde.org.$DT.heads &
 
 
 #repo.or.cz.$DT gitlab.gnome.org.$DT android.googlesource.com.$DT git.zx2c4.com.$DT git.eclipse.org.$DT git.kernel.org.$DT git.savannah.gnu.org.$DT git.savannah.nongnu.org.$DT
+#fedorapeople.org.$DT list peoples git websites: need to append /public_git/ to get their projects
+cat fedorapeople.org.$DT|sed 's|^\s*||'|while read r; do wget "$r/public_git" -O -; done >  fedorapeople.org.fix.$DT.html
+grep /public_git/  fedorapeople.org.fix.$DT.html|  sed "s|.* href='/cgit/||;s|'.*||;s|/tree/$||;s|^|https://fedorapeople.org/cgit/" | sort -u > fedorapeople.org.fix.$DT
 
-for i in pagure.io.$DT blitiri.com.ar.$DT code.qt.io.$DT gitlab.common-lisp.net.$DT code.ill.fr.$DT forgemia.inra.fr.$DT git.unicaen.fr.$DT notabug.org.$DT git.unistra.fr.$DT gcc.git.$DT git.pleroma.social.$DT gitlab.fing.edu.uy.$DT gitlab.huma-num.fr.$DT gitlab.adullact.net.$DT gitlab.irstea.fr.$DT git.alpinelinux.org.$DT gitlab.cerema.fr.$DT git.openembedded.org.$DT gite.lirmm.fr.$DT git.torproject.org.$DT git.xfce.org.$DT git.yoctoproject.org.$DT framagit.org.$DT fedorapeople.org.$DT gitlab.freedesktop.org.$DT gitlab.inria.fr.$DT gitlab.ow2.org.$DT gitbox.apache.org.$DT
-do (sed 's|//|//a:a@|' $i | while read r; do a=$(git ls-remote "$r" | awk '{print ";"$1}'); echo "$r$a"|sed 's/ //g'; done| gzip > $i.heads; sleep 2) &
+
+#git.pleroma.social.$DT - seems not to allow listing
+echo https://git.pleroma.social/pleroma/pleroma > git.pleroma.social.$DT
+
+for i in fedorapeople.org.fix.$DT pagure.io.$DT blitiri.com.ar.$DT code.qt.io.$DT gitlab.common-lisp.net.$DT code.ill.fr.$DT forgemia.inra.fr.$DT git.unicaen.fr.$DT notabug.org.$DT git.unistra.fr.$DT gcc.git.$DT gitlab.fing.edu.uy.$DT gitlab.huma-num.fr.$DT gitlab.adullact.net.$DT gitlab.irstea.fr.$DT git.alpinelinux.org.$DT gitlab.cerema.fr.$DT git.openembedded.org.$DT gite.lirmm.fr.$DT git.torproject.org.$DT git.xfce.org.$DT git.yoctoproject.org.$DT framagit.org.$DT gitlab.freedesktop.org.$DT  gitlab.ow2.org.$DT gitbox.apache.org.$DT gitlab.inria.fr.$DT
+do (sed 's|/\.git/$||;s|^\s*||;s|//|//a:a@|;s|/tree/$||;s|/$||;s|blitiri.com.ar/git/r/|blitiri.com.ar/repos/|;' $i | while read r; do a=$(git ls-remote "$r" 2> $i.err| awk '{print ";"$1}'); echo "$r$a"|sed 's/ //g'; done| gzip > $i.heads; sleep 2) &
 done 
+
 
 # pages 1-300
 # https://gitlab.gnome.org/explore/projects?page=300&sort=latest_activity_desc
@@ -298,10 +306,10 @@ perl -ane "while (m|<td class='toplevel-repo'><a title='([^']*)'|g){print \"http
 cat git.savannah.nongnu.org.$DT | while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; done | gzip > git.savannah.nongnu.org.$DT.heads &
 
 
-#get old repos for gh
+#get old repos for gh, these may have changed again
 python3 listU.py gh$PDT repos '{}' nameWithOwner | sed "s|^b'||;s|'$||" | sort -u > gh$PDT.u
-split -n l/30 -da2 gh$PDT.u gh$PDT.u.
-for j in {00..29}
+split -n l/50 -da2 gh$PDT.u gh$PDT.u.
+for j in {00..49}
 do cat gh$PDT.u.$j | while read r; do
   a=$(git ls-remote gh:$r | awk '{print ";"$1}'); echo gh:$r$a | sed 's/ //g';
   done | gzip > gh$PDT.u.$j.heads &
@@ -321,18 +329,13 @@ done | gzip > gl$DT.new.heads &
 #python3 listU.py gh$DT repos '{"isFork" : false}' nameWithOwner | sed "s|^b'||;s|'$||" | sort -u > gh$DT.u
 python3 listU.py gh$DT repos '{ "pushed_at" : { "$gt" : "'"$PDTdash"'"}' nameWithOwner | sed "s|^b'||;s|'$||" | sort -u > gh$DT.u
 cat gh$PDT.u.*[0-9] | sort -t\; | join -t\; -v2 - gh$DT.u > gh$DT.new.u
-split -n l/30 -da2 gh$DT.new.u gh$DT.u.
-for j in {00..29}
+split -n l/50 -da2 gh$DT.new.u gh$DT.u.
+for j in {00..49}
 do cat gh$DT.u.$j | while read r; do
     a=$(git ls-remote gh:$r | awk '{print ";"$1}'); echo gh:$r$a | sed 's/ //g';
   done | gzip > gh$DT.u.$j.heads &
 done
 
-for j in {00..29}
-do tac gh$DT.u.$j | while read r; do
-    a=$(git ls-remote gh:$r | awk '{print ";"$1}'); echo gh:$r$a | sed 's/ //g';
-  done | gzip > gh$DT.u.$j.headsr &
-done
 
 
 # Get updated bb (do heads on all 2M?)
