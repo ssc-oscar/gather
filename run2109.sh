@@ -170,13 +170,13 @@ do for i in {1..50}
    done | uniq | sort -u | awk '{print "https://'$u'"$1}' >  $u.a.$DT  
    for i in {1..50}
    do for o in latest_activity_desc name_asc name_desc created_desc created_asc
-     do sleep 2; wget "https://$u/explore/projects/starred?non_archived=true&page=$i&sort=name_asc" -O $u.html
+     do sleep 2; wget "https://$u/explore/projects/starred?non_archived=true&page=$i&sort=$o" -O $u.html
       grep '<a class="project" href="' $u.html | sed 's|<a class="project" href="||;s|".*||'
      done
    done | uniq | sort -u | awk '{print "https://'$u'"$1}' >  $u.s.$DT  
    for i in {1..50}
    do for o in latest_activity_desc name_asc name_desc created_desc created_asc
-     do sleep 2; wget "https://$u/explore/projects/trending?non_archived=true&page=$i&sort=name_asc" -O $u.html
+     do sleep 2; wget "https://$u/explore/projects/trending?non_archived=true&page=$i&sort=$o" -O $u.html
         grep '<a class="project" href="' $u.html | sed 's|<a class="project" href="||;s|".*||' 
       done
    done | uniq | sort -u | awk '{print "https://'$u'"$1}' >  $u.t.$DT  
