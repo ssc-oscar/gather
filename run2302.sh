@@ -1,20 +1,6 @@
-#!/bin/bash
+#!/bin/bash   
 
-# add php for next collection http://git.php.net/
-
-#  --- Do everything by running on da servers (in tmux/screen) and connected to gcp via
-#ssh gc
-#
-#To forward mongodb have in your ~/.ssh/config
-#
-#host gc
-#   user YourID
-#   hostname GCPIP
-#   RemoteForward 27017 da1.eecs.utk.edu:27017
-#   port 443
-#   IdentityFile ~/.ssh/id_rsa_gcloud     
-
-# in the first stage bbRepos.py, glRepos.py, and ghUpdatedRepos.py populate mongodb, which is then used to
+# In the first stage bbRepos.py, glRepos.py, and ghUpdatedRepos.py populate mongodb, which is then used to
 # get project list, while the rest populate project list into XXXX.$DT
 # all XXXX.$DT need to be copied to da cluster
 
@@ -24,6 +10,7 @@
 
 git ls-remote bb:swsc/lookup
 git ls-remote gh:fdac20/news
+git ls-remote gh:php/php-src
 git ls-remote gl:inkscape/inkscape
 git ls-remote gl_gnome:GNOME/gtk
 git ls-remote dr:
