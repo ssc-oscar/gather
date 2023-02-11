@@ -13,7 +13,7 @@ git ls-remote gh:fdac20/news
 git ls-remote gh:php/php-src
 git ls-remote gl:inkscape/inkscape
 git ls-remote gl_gnome:GNOME/gtk
-git ls-remote dr:
+git ls-remote dr:project/drupal
 git ls-remote deb:
 
 DT=202210
