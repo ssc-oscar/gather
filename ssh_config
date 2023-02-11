@@ -19,7 +19,7 @@ host gl
 
 host gl_gnome
     User git
-    HostName gitlab.gnome.org
+    HostName ssh.gitlab.gnome.org
     IdentitiesOnly yes
     IdentityFile ~/.ssh/id_rsa
     
