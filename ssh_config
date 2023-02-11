@@ -1,37 +1,37 @@
 host bb
-        User audrism
+        User lgonzal6
         HostName bitbucket.org
         IdentitiesOnly yes
-        IdentityFile ~/.ssh/id_rsagithub
+        IdentityFile ~/.ssh/id_rsa
 
 host gh
     User git
     HostName github.com
     IdentitiesOnly yes
-    IdentityFile ~/.ssh/id_rsagithub
+    IdentityFile ~/.ssh/id_rsa
 
 host gl
     User git
     HostName gitlab.com
     IdentitiesOnly yes
-    IdentityFile ~/.ssh/id_rsagithub
+    IdentityFile ~/.ssh/id_rsa
 
 
 host gl_gnome
     User git
     HostName gitlab.gnome.org
     IdentitiesOnly yes
-    IdentityFile ~/.ssh/id_rsagithub
+    IdentityFile ~/.ssh/id_rsa
     
 
 host dr
   user git
   HostName git.drupal.org
   IdentitiesOnly yes
-  IdentityFile ~/.ssh/id_rsagithub
+  IdentityFile ~/.ssh/id_rsa
 
 host deb
     User git
     HostName salsa.debian.org
     IdentitiesOnly yes
-    IdentityFile ~/.ssh/id_rsagithub
+    IdentityFile ~/.ssh/id_rsa
