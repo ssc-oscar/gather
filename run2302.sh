@@ -16,8 +16,8 @@ git ls-remote gl_gnome:GNOME/gtk
 git ls-remote dr:project/drupal
 git ls-remote deb:
 
-DT=202210
-DTdash=2022-10-12
+DT=202302
+DTdash=2023-02-12
 PDT=202109
 PDTdash=2021-09-10
 
