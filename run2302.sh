@@ -14,10 +14,10 @@ git ls-remote gh:php/php-src
 git ls-remote gl:inkscape/inkscape
 git ls-remote gl_gnome:GNOME/gtk
 git ls-remote dr:project/drupal
-git ls-remote deb:
+git ls-remote deb:dpkg-team/dpkg
 
 DT=202302
-DTdash=2023-02-12
+DTdash=2023-02-24
 PDT=202109
 PDTdash=2021-09-10
 
@@ -36,18 +36,18 @@ done > tokens_date
 for i in {1..9}; do (r=$(head -$i tokens_date|tail -1); echo $r | python3 ghUpdatedRepos.py gh$DT repos  &> ghReposList$(echo $r | cut -d ' ' -f2).updt) & done
 
 # BB: need to extract all, no way to check for updated ones
-python3 bbRepos.py 1980-01-01 bitbucket$DT 2013-00-01 &> bbRepos${DT}1.out &
-python3 bbRepos.py 2013-01-01 bitbucket$DT 2014-05-03 &> bbRepos${DT}2.out &
-python3 bbRepos.py 2014-05-03 bitbucket$DT 2015-05-03 &> bbRepos${DT}3.out &
-python3 bbRepos.py 2015-05-03 bitbucket$DT 2016-05-03 &> bbRepos${DT}4.out &
-python3 bbRepos.py 2016-05-03 bitbucket$DT 2017-05-03 &> bbRepos${DT}5.out &
-python3 bbRepos.py 2017-05-03 bitbucket$DT 2018-05-03 &> bbRepos${DT}6.out &
-python3 bbRepos.py 2018-05-03 bitbucket$DT 2019-05-03 &> bbRepos${DT}7.out &
-python3 bbRepos.py 2019-05-03 bitbucket$DT 2020-05-01 &> bbRepos${DT}8.out &
-python3 bbRepos.py 2020-05-03 bitbucket$DT 2021-05-01 &> bbRepos${DT}9.out &
-python3 bbRepos.py 2021-05-01 bitbucket$DT 2022-05-03 &> bbRepos${DT}10.out &
+python3 bbRepos.py 1980-01-01 bitbucket$DT 2013-00-01 &> bbRepos${DT}1.out #&
+#python3 bbRepos.py 2013-01-01 bitbucket$DT 2014-05-03 &> bbRepos${DT}2.out &
+#python3 bbRepos.py 2014-05-03 bitbucket$DT 2015-05-03 &> bbRepos${DT}3.out &
+#python3 bbRepos.py 2015-05-03 bitbucket$DT 2016-05-03 &> bbRepos${DT}4.out &
+#python3 bbRepos.py 2016-05-03 bitbucket$DT 2017-05-03 &> bbRepos${DT}5.out &
+#python3 bbRepos.py 2017-05-03 bitbucket$DT 2018-05-03 &> bbRepos${DT}6.out &
+#python3 bbRepos.py 2018-05-03 bitbucket$DT 2019-05-03 &> bbRepos${DT}7.out &
+#python3 bbRepos.py 2019-05-03 bitbucket$DT 2020-05-01 &> bbRepos${DT}8.out &
+#python3 bbRepos.py 2020-05-03 bitbucket$DT 2021-05-01 &> bbRepos${DT}9.out &
+#python3 bbRepos.py 2021-05-01 bitbucket$DT 2022-05-03 &> bbRepos${DT}10.out &
 #get only new, use heads for existing repos
-python3 bbRepos.py 2022-05-03 bitbucket$DT 2023-05-03 &> bbRepos${DT}0.out &
+#python3 bbRepos.py 2022-05-03 bitbucket$DT 2023-05-03 &> bbRepos${DT}0.out &
 
 #UNCHECK FROM HERE
 # # SF 
