@@ -36,7 +36,7 @@ while True:
      continue
   if 'values' in jsonDict:
     for prj in jsonDict ['values']:
-      coll .insert (prj) 
+      coll.insert (prj) 
   if 'next' not in jsonDict:
     print ("no next")    
     for k in jsonDict.keys ():
