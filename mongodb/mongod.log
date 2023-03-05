@@ -1,0 +1,136 @@
+2023-03-04T14:55:47.703-0500 I CONTROL  [main] ***** SERVER RESTARTED *****
+2023-03-04T14:55:47.710-0500 I CONTROL  [initandlisten] MongoDB starting : pid=4096 port=27017 dbpath=/lustre/haven/user/lgonzal6/woc-gather 64-bit host=acf-login5
+2023-03-04T14:55:47.710-0500 I CONTROL  [initandlisten] db version v3.6.3
+2023-03-04T14:55:47.710-0500 I CONTROL  [initandlisten] git version: 9586e557d54ef70f9ca4b43c26892cd55257e1a5
+2023-03-04T14:55:47.710-0500 I CONTROL  [initandlisten] allocator: tcmalloc
+2023-03-04T14:55:47.710-0500 I CONTROL  [initandlisten] modules: none
+2023-03-04T14:55:47.710-0500 I CONTROL  [initandlisten] build environment:
+2023-03-04T14:55:47.710-0500 I CONTROL  [initandlisten]     distarch: x86_64
+2023-03-04T14:55:47.710-0500 I CONTROL  [initandlisten]     target_arch: x86_64
+2023-03-04T14:55:47.710-0500 I CONTROL  [initandlisten] options: { config: "mongod.conf", processManagement: { fork: false }, storage: { dbPath: "/lustre/haven/user/lgonzal6/woc-gather", journal: { enabled: true } }, systemLog: { destination: "file", logAppend: true, path: "mongod.log" } }
+2023-03-04T14:55:47.719-0500 I STORAGE  [initandlisten] wiredtiger_open config: create,cache_size=31591M,session_max=20000,eviction=(threads_min=4,threads_max=4),config_base=false,statistics=(fast),log=(enabled=true,archive=true,path=journal,compressor=snappy),file_manager=(close_idle_time=100000),statistics_log=(wait=0),verbose=(recovery_progress),
+2023-03-04T14:55:49.744-0500 I CONTROL  [initandlisten] 
+2023-03-04T14:55:49.744-0500 I CONTROL  [initandlisten] ** WARNING: Access control is not enabled for the database.
+2023-03-04T14:55:49.744-0500 I CONTROL  [initandlisten] **          Read and write access to data and configuration is unrestricted.
+2023-03-04T14:55:49.744-0500 I CONTROL  [initandlisten] 
+2023-03-04T14:55:49.744-0500 I CONTROL  [initandlisten] ** WARNING: This server is bound to localhost.
+2023-03-04T14:55:49.744-0500 I CONTROL  [initandlisten] **          Remote systems will be unable to connect to this server. 
+2023-03-04T14:55:49.744-0500 I CONTROL  [initandlisten] **          Start the server with --bind_ip <address> to specify which IP 
+2023-03-04T14:55:49.744-0500 I CONTROL  [initandlisten] **          addresses it should serve responses from, or with --bind_ip_all to
+2023-03-04T14:55:49.744-0500 I CONTROL  [initandlisten] **          bind to all interfaces. If this behavior is desired, start the
+2023-03-04T14:55:49.744-0500 I CONTROL  [initandlisten] **          server with --bind_ip 127.0.0.1 to disable this warning.
+2023-03-04T14:55:49.744-0500 I CONTROL  [initandlisten] 
+2023-03-04T14:55:49.745-0500 I CONTROL  [initandlisten] 
+2023-03-04T14:55:49.745-0500 I CONTROL  [initandlisten] ** WARNING: You are running on a NUMA machine.
+2023-03-04T14:55:49.745-0500 I CONTROL  [initandlisten] **          We suggest launching mongod like this to avoid performance problems:
+2023-03-04T14:55:49.745-0500 I CONTROL  [initandlisten] **              numactl --interleave=all mongod [other options]
+2023-03-04T14:55:49.745-0500 I CONTROL  [initandlisten] 
+2023-03-04T14:55:49.745-0500 I CONTROL  [initandlisten] ** WARNING: /sys/kernel/mm/transparent_hugepage/enabled is 'always'.
+2023-03-04T14:55:49.746-0500 I CONTROL  [initandlisten] **        We suggest setting it to 'never'
+2023-03-04T14:55:49.746-0500 I CONTROL  [initandlisten] 
+2023-03-04T14:55:49.746-0500 I CONTROL  [initandlisten] ** WARNING: /sys/kernel/mm/transparent_hugepage/defrag is 'always'.
+2023-03-04T14:55:49.746-0500 I CONTROL  [initandlisten] **        We suggest setting it to 'never'
+2023-03-04T14:55:49.746-0500 I CONTROL  [initandlisten] 
+2023-03-04T14:55:49.746-0500 I CONTROL  [initandlisten] ** WARNING: soft rlimits too low. rlimits set to 4096 processes, 131072 files. Number of processes should be at least 65536 : 0.5 times number of files.
+2023-03-04T14:55:49.746-0500 I CONTROL  [initandlisten] 
+2023-03-04T14:55:49.746-0500 I STORAGE  [initandlisten] createCollection: admin.system.version with provided UUID: 450e6985-6492-4a7f-a69a-0869ad0c5142
+2023-03-04T14:55:49.779-0500 I COMMAND  [initandlisten] setting featureCompatibilityVersion to 3.6
+2023-03-04T14:55:49.784-0500 I STORAGE  [initandlisten] createCollection: local.startup_log with generated UUID: 3c5b4972-7420-41b4-918c-5bc17c8c50e1
+2023-03-04T14:55:49.832-0500 I FTDC     [initandlisten] Initializing full-time diagnostic data capture with directory '/lustre/haven/user/lgonzal6/woc-gather/diagnostic.data'
+2023-03-04T14:55:49.832-0500 I NETWORK  [initandlisten] waiting for connections on port 27017
+2023-03-04T15:00:49.833-0500 I STORAGE  [thread1] createCollection: config.system.sessions with generated UUID: 234469dd-81ab-4c25-ab22-4a5ad2a9f103
+2023-03-04T15:00:50.022-0500 I INDEX    [thread1] build index on: config.system.sessions properties: { v: 2, key: { lastUse: 1 }, name: "lsidTTLIndex", ns: "config.system.sessions", expireAfterSeconds: 1800 }
+2023-03-04T15:00:50.022-0500 I INDEX    [thread1] 	 building index using bulk method; build may temporarily use up to 500 megabytes of RAM
+2023-03-04T15:00:50.038-0500 I INDEX    [thread1] build index done.  scanned 0 total records. 0 secs
+2023-03-04T15:00:50.038-0500 I COMMAND  [thread1] command config.$cmd command: createIndexes { createIndexes: "system.sessions", indexes: [ { key: { lastUse: 1 }, name: "lsidTTLIndex", expireAfterSeconds: 1800 } ], $db: "config" } numYields:0 reslen:98 locks:{ Global: { acquireCount: { r: 1, w: 1 } }, Database: { acquireCount: { W: 1 } }, Collection: { acquireCount: { w: 1 } } } protocol:op_msg 205ms
+2023-03-04T15:02:25.130-0500 I CONTROL  [signalProcessingThread] got signal 2 (Interrupt), will terminate after current cmd ends
+2023-03-04T15:02:25.130-0500 I NETWORK  [signalProcessingThread] shutdown: going to close listening sockets...
+2023-03-04T15:02:25.130-0500 I NETWORK  [signalProcessingThread] removing socket file: /tmp/mongodb-27017.sock
+2023-03-04T15:02:25.131-0500 I FTDC     [signalProcessingThread] Shutting down full-time diagnostic data capture
+2023-03-04T15:02:25.155-0500 I STORAGE  [signalProcessingThread] WiredTigerKVEngine shutting down
+2023-03-04T15:02:25.381-0500 I STORAGE  [signalProcessingThread] shutdown: removing fs lock...
+2023-03-04T15:02:25.383-0500 I CONTROL  [signalProcessingThread] now exiting
+2023-03-04T15:02:25.383-0500 I CONTROL  [signalProcessingThread] shutting down with code:0
+2023-03-04T15:04:18.508-0500 I CONTROL  [main] ***** SERVER RESTARTED *****
+2023-03-04T15:04:18.516-0500 I CONTROL  [initandlisten] MongoDB starting : pid=4887 port=27017 dbpath=/lustre/haven/user/lgonzal6/woc-gather 64-bit host=acf-login5
+2023-03-04T15:04:18.516-0500 I CONTROL  [initandlisten] db version v3.6.3
+2023-03-04T15:04:18.516-0500 I CONTROL  [initandlisten] git version: 9586e557d54ef70f9ca4b43c26892cd55257e1a5
+2023-03-04T15:04:18.516-0500 I CONTROL  [initandlisten] allocator: tcmalloc
+2023-03-04T15:04:18.516-0500 I CONTROL  [initandlisten] modules: none
+2023-03-04T15:04:18.516-0500 I CONTROL  [initandlisten] build environment:
+2023-03-04T15:04:18.516-0500 I CONTROL  [initandlisten]     distarch: x86_64
+2023-03-04T15:04:18.516-0500 I CONTROL  [initandlisten]     target_arch: x86_64
+2023-03-04T15:04:18.516-0500 I CONTROL  [initandlisten] options: { config: "mongod.conf", processManagement: { fork: false }, storage: { dbPath: "/lustre/haven/user/lgonzal6/woc-gather", journal: { enabled: true } }, systemLog: { destination: "file", logAppend: true, path: "mongod.log" } }
+2023-03-04T15:04:18.522-0500 I -        [initandlisten] Detected data files in /lustre/haven/user/lgonzal6/woc-gather created by the 'wiredTiger' storage engine, so setting the active storage engine to 'wiredTiger'.
+2023-03-04T15:04:18.527-0500 I STORAGE  [initandlisten] wiredtiger_open config: create,cache_size=31591M,session_max=20000,eviction=(threads_min=4,threads_max=4),config_base=false,statistics=(fast),log=(enabled=true,archive=true,path=journal,compressor=snappy),file_manager=(close_idle_time=100000),statistics_log=(wait=0),verbose=(recovery_progress),
+2023-03-04T15:04:20.124-0500 I STORAGE  [initandlisten] WiredTiger message [1677960260:124124][4887:0x2b8fdad15e40], txn-recover: Main recovery loop: starting at 1/23680
+2023-03-04T15:04:20.218-0500 I STORAGE  [initandlisten] WiredTiger message [1677960260:218223][4887:0x2b8fdad15e40], txn-recover: Recovering log 1 through 2
+2023-03-04T15:04:20.340-0500 I STORAGE  [initandlisten] WiredTiger message [1677960260:340442][4887:0x2b8fdad15e40], txn-recover: Recovering log 2 through 2
+2023-03-04T15:04:20.741-0500 I CONTROL  [initandlisten] 
+2023-03-04T15:04:20.741-0500 I CONTROL  [initandlisten] ** WARNING: Access control is not enabled for the database.
+2023-03-04T15:04:20.741-0500 I CONTROL  [initandlisten] **          Read and write access to data and configuration is unrestricted.
+2023-03-04T15:04:20.741-0500 I CONTROL  [initandlisten] 
+2023-03-04T15:04:20.741-0500 I CONTROL  [initandlisten] ** WARNING: This server is bound to localhost.
+2023-03-04T15:04:20.741-0500 I CONTROL  [initandlisten] **          Remote systems will be unable to connect to this server. 
+2023-03-04T15:04:20.741-0500 I CONTROL  [initandlisten] **          Start the server with --bind_ip <address> to specify which IP 
+2023-03-04T15:04:20.741-0500 I CONTROL  [initandlisten] **          addresses it should serve responses from, or with --bind_ip_all to
+2023-03-04T15:04:20.741-0500 I CONTROL  [initandlisten] **          bind to all interfaces. If this behavior is desired, start the
+2023-03-04T15:04:20.741-0500 I CONTROL  [initandlisten] **          server with --bind_ip 127.0.0.1 to disable this warning.
+2023-03-04T15:04:20.741-0500 I CONTROL  [initandlisten] 
+2023-03-04T15:04:20.742-0500 I CONTROL  [initandlisten] 
+2023-03-04T15:04:20.742-0500 I CONTROL  [initandlisten] ** WARNING: You are running on a NUMA machine.
+2023-03-04T15:04:20.742-0500 I CONTROL  [initandlisten] **          We suggest launching mongod like this to avoid performance problems:
+2023-03-04T15:04:20.742-0500 I CONTROL  [initandlisten] **              numactl --interleave=all mongod [other options]
+2023-03-04T15:04:20.743-0500 I CONTROL  [initandlisten] 
+2023-03-04T15:04:20.743-0500 I CONTROL  [initandlisten] ** WARNING: /sys/kernel/mm/transparent_hugepage/enabled is 'always'.
+2023-03-04T15:04:20.743-0500 I CONTROL  [initandlisten] **        We suggest setting it to 'never'
+2023-03-04T15:04:20.743-0500 I CONTROL  [initandlisten] 
+2023-03-04T15:04:20.743-0500 I CONTROL  [initandlisten] ** WARNING: /sys/kernel/mm/transparent_hugepage/defrag is 'always'.
+2023-03-04T15:04:20.743-0500 I CONTROL  [initandlisten] **        We suggest setting it to 'never'
+2023-03-04T15:04:20.743-0500 I CONTROL  [initandlisten] 
+2023-03-04T15:04:20.743-0500 I CONTROL  [initandlisten] ** WARNING: soft rlimits too low. rlimits set to 4096 processes, 131072 files. Number of processes should be at least 65536 : 0.5 times number of files.
+2023-03-04T15:04:20.743-0500 I CONTROL  [initandlisten] 
+2023-03-04T15:04:20.774-0500 I FTDC     [initandlisten] Initializing full-time diagnostic data capture with directory '/lustre/haven/user/lgonzal6/woc-gather/diagnostic.data'
+2023-03-04T15:04:20.774-0500 I NETWORK  [initandlisten] waiting for connections on port 27017
+2023-03-04T15:07:46.941-0500 I NETWORK  [listener] connection accepted from 127.0.0.1:47384 #1 (1 connection now open)
+2023-03-04T15:07:46.941-0500 I NETWORK  [conn1] received client metadata from 127.0.0.1:47384 conn: { driver: { name: "PyMongo", version: "3.8.0" }, os: { type: "Linux", name: "Linux", architecture: "x86_64", version: "3.10.0-957.5.1.el7.x86_64" }, platform: "CPython 3.6.10.final.0" }
+2023-03-04T15:07:46.943-0500 I NETWORK  [listener] connection accepted from 127.0.0.1:47386 #2 (2 connections now open)
+2023-03-04T15:07:46.943-0500 I NETWORK  [listener] connection accepted from 127.0.0.1:47388 #3 (3 connections now open)
+2023-03-04T15:07:46.943-0500 I NETWORK  [listener] connection accepted from 127.0.0.1:47390 #4 (4 connections now open)
+2023-03-04T15:07:46.943-0500 I NETWORK  [listener] connection accepted from 127.0.0.1:47392 #5 (5 connections now open)
+2023-03-04T15:07:46.943-0500 I NETWORK  [conn3] received client metadata from 127.0.0.1:47388 conn: { driver: { name: "PyMongo", version: "3.8.0" }, os: { type: "Linux", name: "Linux", architecture: "x86_64", version: "3.10.0-957.5.1.el7.x86_64" }, platform: "CPython 3.6.10.final.0" }
+2023-03-04T15:07:46.943-0500 I NETWORK  [conn2] received client metadata from 127.0.0.1:47386 conn: { driver: { name: "PyMongo", version: "3.8.0" }, os: { type: "Linux", name: "Linux", architecture: "x86_64", version: "3.10.0-957.5.1.el7.x86_64" }, platform: "CPython 3.6.10.final.0" }
+2023-03-04T15:07:46.943-0500 I NETWORK  [conn4] received client metadata from 127.0.0.1:47390 conn: { driver: { name: "PyMongo", version: "3.8.0" }, os: { type: "Linux", name: "Linux", architecture: "x86_64", version: "3.10.0-957.5.1.el7.x86_64" }, platform: "CPython 3.6.10.final.0" }
+2023-03-04T15:07:46.943-0500 I NETWORK  [conn5] received client metadata from 127.0.0.1:47392 conn: { driver: { name: "PyMongo", version: "3.8.0" }, os: { type: "Linux", name: "Linux", architecture: "x86_64", version: "3.10.0-957.5.1.el7.x86_64" }, platform: "CPython 3.6.10.final.0" }
+2023-03-04T15:07:46.943-0500 I NETWORK  [listener] connection accepted from 127.0.0.1:47394 #6 (6 connections now open)
+2023-03-04T15:07:46.944-0500 I NETWORK  [listener] connection accepted from 127.0.0.1:47396 #7 (7 connections now open)
+2023-03-04T15:07:46.944-0500 I NETWORK  [conn6] received client metadata from 127.0.0.1:47394 conn: { driver: { name: "PyMongo", version: "3.8.0" }, os: { type: "Linux", name: "Linux", architecture: "x86_64", version: "3.10.0-957.5.1.el7.x86_64" }, platform: "CPython 3.6.10.final.0" }
+2023-03-04T15:07:46.944-0500 I NETWORK  [listener] connection accepted from 127.0.0.1:47398 #8 (8 connections now open)
+2023-03-04T15:07:46.944-0500 I NETWORK  [conn8] received client metadata from 127.0.0.1:47398 conn: { driver: { name: "PyMongo", version: "3.8.0" }, os: { type: "Linux", name: "Linux", architecture: "x86_64", version: "3.10.0-957.5.1.el7.x86_64" }, platform: "CPython 3.6.10.final.0" }
+2023-03-04T15:07:46.944-0500 I NETWORK  [conn7] received client metadata from 127.0.0.1:47396 conn: { driver: { name: "PyMongo", version: "3.8.0" }, os: { type: "Linux", name: "Linux", architecture: "x86_64", version: "3.10.0-957.5.1.el7.x86_64" }, platform: "CPython 3.6.10.final.0" }
+2023-03-04T15:07:46.944-0500 I NETWORK  [listener] connection accepted from 127.0.0.1:47400 #9 (9 connections now open)
+2023-03-04T15:07:46.945-0500 I NETWORK  [conn9] received client metadata from 127.0.0.1:47400 conn: { driver: { name: "PyMongo", version: "3.8.0" }, os: { type: "Linux", name: "Linux", architecture: "x86_64", version: "3.10.0-957.5.1.el7.x86_64" }, platform: "CPython 3.6.10.final.0" }
+2023-03-04T15:07:48.233-0500 I NETWORK  [listener] connection accepted from 127.0.0.1:47530 #10 (10 connections now open)
+2023-03-04T15:07:48.233-0500 I NETWORK  [conn10] received client metadata from 127.0.0.1:47530 conn: { driver: { name: "PyMongo", version: "3.8.0" }, os: { type: "Linux", name: "Linux", architecture: "x86_64", version: "3.10.0-957.5.1.el7.x86_64" }, platform: "CPython 3.6.10.final.0" }
+2023-03-04T15:07:48.235-0500 I STORAGE  [conn10] createCollection: gh202303.repos with generated UUID: cbe0cc2a-7c82-45c0-88b0-9c0392460a36
+2023-03-04T15:07:48.430-0500 I NETWORK  [listener] connection accepted from 127.0.0.1:47554 #11 (11 connections now open)
+2023-03-04T15:07:48.431-0500 I NETWORK  [conn11] received client metadata from 127.0.0.1:47554 conn: { driver: { name: "PyMongo", version: "3.8.0" }, os: { type: "Linux", name: "Linux", architecture: "x86_64", version: "3.10.0-957.5.1.el7.x86_64" }, platform: "CPython 3.6.10.final.0" }
+2023-03-04T15:07:48.449-0500 I NETWORK  [listener] connection accepted from 127.0.0.1:47556 #12 (12 connections now open)
+2023-03-04T15:07:48.449-0500 I NETWORK  [conn12] received client metadata from 127.0.0.1:47556 conn: { driver: { name: "PyMongo", version: "3.8.0" }, os: { type: "Linux", name: "Linux", architecture: "x86_64", version: "3.10.0-957.5.1.el7.x86_64" }, platform: "CPython 3.6.10.final.0" }
+2023-03-04T15:14:59.997-0500 I NETWORK  [conn1] end connection 127.0.0.1:47384 (11 connections now open)
+2023-03-04T15:18:27.755-0500 I NETWORK  [conn4] end connection 127.0.0.1:47390 (10 connections now open)
+2023-03-04T15:25:27.855-0500 I NETWORK  [conn7] end connection 127.0.0.1:47396 (9 connections now open)
+2023-03-04T15:25:31.895-0500 I NETWORK  [conn5] end connection 127.0.0.1:47392 (8 connections now open)
+2023-03-04T15:25:36.383-0500 I NETWORK  [conn2] end connection 127.0.0.1:47386 (7 connections now open)
+2023-03-04T15:25:39.376-0500 I NETWORK  [conn3] end connection 127.0.0.1:47388 (6 connections now open)
+2023-03-04T15:28:58.681-0500 I NETWORK  [listener] connection accepted from 127.0.0.1:47700 #13 (7 connections now open)
+2023-03-04T15:28:58.682-0500 I NETWORK  [conn13] received client metadata from 127.0.0.1:47700 conn: { application: { name: "MongoDB Shell" }, driver: { name: "MongoDB Internal Client", version: "3.6.3" }, os: { type: "Linux", name: "CentOS Linux release 7.6.1810 (Core) ", architecture: "x86_64", version: "Kernel 3.10.0-957.5.1.el7.x86_64" } }
+2023-03-04T15:37:30.981-0500 I NETWORK  [conn13] end connection 127.0.0.1:47700 (6 connections now open)
+2023-03-04T15:41:11.328-0500 I NETWORK  [conn6] end connection 127.0.0.1:47394 (4 connections now open)
+2023-03-04T15:41:11.328-0500 I NETWORK  [conn11] end connection 127.0.0.1:47554 (5 connections now open)
+2023-03-04T16:17:31.712-0500 I NETWORK  [listener] connection accepted from 127.0.0.1:56748 #14 (5 connections now open)
+2023-03-04T16:17:31.713-0500 I NETWORK  [conn14] received client metadata from 127.0.0.1:56748 conn: { application: { name: "MongoDB Shell" }, driver: { name: "MongoDB Internal Client", version: "3.6.3" }, os: { type: "Linux", name: "CentOS Linux release 7.6.1810 (Core) ", architecture: "x86_64", version: "Kernel 3.10.0-957.5.1.el7.x86_64" } }
+2023-03-04T16:21:39.830-0500 I NETWORK  [conn14] end connection 127.0.0.1:56748 (4 connections now open)
+2023-03-04T16:34:25.057-0500 I NETWORK  [listener] connection accepted from 127.0.0.1:59580 #15 (5 connections now open)
+2023-03-04T16:34:25.057-0500 I NETWORK  [conn15] received client metadata from 127.0.0.1:59580 conn: { application: { name: "MongoDB Shell" }, driver: { name: "MongoDB Internal Client", version: "3.6.3" }, os: { type: "Linux", name: "CentOS Linux release 7.6.1810 (Core) ", architecture: "x86_64", version: "Kernel 3.10.0-957.5.1.el7.x86_64" } }
+2023-03-04T16:35:17.089-0500 I NETWORK  [conn15] end connection 127.0.0.1:59580 (4 connections now open)
