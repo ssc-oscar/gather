@@ -1,8 +1,6 @@
-import csv
-import json
+import csv, sys, json
 import logging
-import math
-import random
+import math, random
 import time
 
 import requests
@@ -10,6 +8,8 @@ from lxml import etree
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+
+output = sys.argv[1]
 
 # common_user_agents.json from https://techblog.willshouse.com/2012/01/03/most-common-user-agents/
 common_user_agents = [
@@ -72,7 +72,7 @@ def list_projects():
             time.sleep(1)
         else:
             break
-    with open("projects.csv", "w", newline="") as f:
+    with open(output+".csv", "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(
             [
@@ -149,7 +149,7 @@ def list_repos_per_proj(project_url: str):
 def list_repositories():
     project_urls = []
 
-    with open("projects.csv") as csvfile:
+    with open(output+".csv") as csvfile:
         reader = csv.reader(csvfile)
         next(reader)
         for row in reader:
@@ -166,17 +166,17 @@ def list_repositories():
         time.sleep(random.random())
         repository_urls[proj_name] = repos
 
-    with open("project_repositories.json", "w") as f:
+    with open(output+".json", "w") as f:
         json.dump(repository_urls, f)
 
 
 def print_repositories():
     repos = []
-    with open("project_repositories.json") as f:
+    with open(output+".json") as f:
         data = json.load(f)
     for _ in data.values():
         repos.extend(_)
-    with open("repository_url", "w") as f:
+    with open(output, "w") as f:
         for r in repos:
             f.write(f"{r}\n")
 
