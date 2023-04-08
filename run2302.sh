@@ -389,3 +389,6 @@ for i in sf bitbucket gl gh
   do mongodump -d ${i}202303 --gzip
 done
 
+#get launchpad list
+python3 list_launchpad.py lp.$DT
+cat lp.$DT | while read r; do   a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a | sed 's/ //g';   done |gzip > lp.$DT.heads
