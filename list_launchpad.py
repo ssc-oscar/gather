@@ -158,7 +158,7 @@ def list_repositories():
     # well, project ubuntu does not appear in the https://launchpad.net/projects/+all page.
     # so I add it manually :)
     if "https://launchpad.net/ubuntu" not in project_urls:
-        project_urls.append("https://launchpad.net/ubuntu")
+        project_urls.append(("Ubuntu","https://launchpad.net/ubuntu"))
     repository_urls = {}
     for proj_name, proj_url in project_urls:
         url = "https://code." + proj_url.split("//", 1)[1]
@@ -182,5 +182,8 @@ def print_repositories():
 
 
 if __name__ == "__main__":
+    #this runs a few days
     list_projects()
+    #this runs a few days
     list_repositories()
+    print_repositories()
