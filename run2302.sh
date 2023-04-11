@@ -196,6 +196,8 @@ done | gzip > invent.kde.org.$DT.heads &
 cat fedorapeople.org.$DT|sed 's|^\s*||'|while read r; do wget "$r/public_git" --no-check-certificate -O -; done >  fedorapeople.org.fix.$DT.html
 grep /public_git/  fedorapeople.org.fix.$DT.html|  sed "s|.* href='/cgit/||;s|'.*||;s|/tree/$||;s|^|https://fedorapeople.org/cgit/" | sort -u > fedorapeople.org.fix.$DT
 
+
+
 # Output: sed: -e expression #1, char 74: unterminated `s' command
 
 echo "Finished.."
@@ -286,6 +288,17 @@ perl -ane 'while(m|class="RepoList-itemName">([^<]*)</|g){print "https://android
 cat android.googlesource.com.$DT | \
 while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g';
 done | gzip > android.googlesource.com.$DT.heads &
+
+for i in go gerrit chromium
+do wget https://$i.googlesource.com/ -O $i.googlesource.com.html
+perl -ane 'while(m|class="RepoList-itemName">([^<]*)</|g){print "https://'$i'.googlesource.com/$1\n";}' < $i.googlesource.com.html > $i.googlesource.com.$DT
+done
+for i in go gerrit chromium
+do cat $i.googlesource.com.$DT | \
+while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g';
+done | gzip > $i.googlesource.com.$DT.heads &
+done
+
 
 # ###
 
