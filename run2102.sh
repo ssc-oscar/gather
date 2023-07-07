@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# add php for next collection http://git.php.net/
+
 #use E2 8cpu 32GB
 #container swsc/gather
 #Once container is created,

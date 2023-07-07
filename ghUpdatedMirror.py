@@ -11,13 +11,7 @@ import time
 import sys
 
 # get start and end date, and GITHUB API token from command line
-token, begin, end = sys.stdin.readline().strip().split(' ')
-
-try:
-  datetime.strptime(begin, '%Y-%m-%d')
-  datetime.strptime(end, '%Y-%m-%d')
-except ValueError:
-  raise ValueError("Incorrect beginning date format, should be YYYY-MM-DD")
+token = sys.stdin.readline().strip()
 
 # DB info
 client = pymongo.MongoClient()
@@ -29,9 +23,6 @@ coll = db[collName]
 
 url = 'https://api.github.com/graphql'
 headers = {'Authorization': 'token ' + token}
-start = begin + 'T00:00:00Z'
-end_time = datetime.strptime(end + 'T00:00:00Z', "%Y-%m-%dT%H:%M:%SZ")
-interval = datetime.strptime(start, "%Y-%m-%dT%H:%M:%SZ")
 total = 0
 remaining = 5000
 
@@ -77,11 +68,8 @@ def wait(reset):
 def gatherData (res):
   global total
   repos = res['data']['search']['nodes']
-  #dt = res['data']['search']['nodes']
   for i in repos:
-    coll.insert(i)
-    #for repo in repos:
-    #  coll.insert({**repo['node'],**{'period': begin}})
+    coll .insert(i)
   total += len(repos)
 
   output = "Got {} repos. Total count is {}. Have {} calls remaining."
@@ -132,3 +120,4 @@ if r.ok:
         except Exception as e:
           print(e)
   except Exception as e:
+    print(e)

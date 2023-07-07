@@ -21,7 +21,17 @@ done > tokens_date
 
 for i in {1..9}; do (r=$(head -$i tokens_date|tail -1); echo $r | python3 ghUpdatedRepos.py gh$DT repos  &> ghReposList$(echo $r | cut -d ' ' -f2).updt) & done
 
+#for next run
+#for i in {1..9}; do (r=$(head -$i tokens_date|tail -1); echo $r | python3 ghUpdatedForks.py gh$DT forks  &> ghForksList$(echo $r | cut -d ' ' -f2).updt) & done
+# filter query: "fork:true" appears to have no effect whasoever
+# python3 listU.py gh202003 forks {} nameWithOwner forkCount | sed "s|^b'||;s|'$||" > gl$DT.forkCnt
+# cut -d/ -f1 gl$DT.forkCnt| sort -T. -S 1G -u > gl$DT.forkCnt.u
+# split -n l/9 -da1 gl$DT.forkCnt.u gl$DT.forkCnt.u.
+# for i in {1..9}; do (r=$(head -$i tokens|tail -1); cat gl$DT.forkCnt.u.$i | python3 ghForks.py gh$DT frk $r &> ghForks$i.updt) & done
 
+
+#head -1 tokens | python3 ghUpdatedMirror.py gh$DT mirrors  &> ghMirrorsList.updt
+#can get parent from date range, go with user
 
 # BB: need to extract all, no way to check for updated ones
 #python3 bbRepos.py 1980-01-01 bitbucket$DT 2013-00-01 &> bbRepos${DT}0.out &
