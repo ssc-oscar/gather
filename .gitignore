@@ -1,0 +1,17 @@
+mongodb
+dump
+tokens*
+.nfs*
+*.out
+*.updt
+*.heads
+*.html
+*.prj
+*.prj.*
+*.err
+*.202303
+*.202303.*
+*.new
+*.new.*
+*.u
+*.u.*
