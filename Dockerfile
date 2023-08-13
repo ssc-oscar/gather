@@ -1,6 +1,6 @@
 FROM ubuntu:bionic
 
-MAINTAINER Audris Mockus <audris@mockus.org>
+MAINTAINER Audris Mockus <audris@mockus.org> | Luis Gonzalez Villalobos <lgonzalvill@gmail.com>
 
 USER root
 
@@ -49,9 +49,12 @@ RUN if [ ! -d /var/run/sshd ]; then mkdir /var/run/sshd; chmod 0755 /var/run/ssh
 
 COPY init.sh startsvc.sh startshell.sh notebook.sh startDef.sh /bin/ 
 
-ENV NB_USER audris
-ENV NB_UID 22923 
-ENV NB_GID 2343
+# ENV NB_USER audris
+# ENV NB_UID 22923 
+# ENV NB_GID 2343
+ENV NB_USER lgonzal6
+ENV NB_UID 26450
+ENV NB_GID 2075
 ENV HOME /home/$NB_USER
 RUN groupadd -g $NB_GID da
 RUN useradd -m -s /bin/bash -N -u $NB_UID -g $NB_GID $NB_USER && mkdir $HOME/.ssh && chown -R $NB_USER:users $HOME 

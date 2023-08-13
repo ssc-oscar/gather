@@ -1,5 +1,6 @@
 #!/bin/bash
-i=audris
+#i=audris
+i=lgonzal6
 echo "$i ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$i
 sed -i 's/^$/+ : '$i' : ALL/' /etc/security/access.conf
 /usr/sbin/sshd -e
