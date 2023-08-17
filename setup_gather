@@ -1,14 +1,10 @@
-FROM ubuntu:bionic
+#!/usr/bin/bash
 
-MAINTAINER Audris Mockus <audris@mockus.org>
+#Script to setup VM
 
-USER root
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
 
-ARG DEBIAN_FRONTEND=noninteractive
 
-RUN groupadd -r mongodb && useradd -r -g mongodb mongodb
-
-RUN apt update && DEBIAN_FRONTEND='noninteractive' apt install -y wget curl gnupg apt-transport-https
 
 #mongodb
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4 
@@ -49,12 +45,12 @@ RUN if [ ! -d /var/run/sshd ]; then mkdir /var/run/sshd; chmod 0755 /var/run/ssh
 
 COPY init.sh startsvc.sh startshell.sh notebook.sh startDef.sh /bin/ 
 
-ENV NB_USER audris
-ENV NB_UID 22923 
-ENV NB_GID 2343
-# ENV NB_USER lgonzal6
-# ENV NB_UID 26450
-# ENV NB_GID 2075
+# ENV NB_USER audris
+# ENV NB_UID 22923 
+# ENV NB_GID 2343
+ENV NB_USER lgonzal6
+ENV NB_UID 26450
+ENV NB_GID 2075
 ENV HOME /home/$NB_USER
 RUN groupadd -g $NB_GID da
 RUN useradd -m -s /bin/bash -N -u $NB_UID -g $NB_GID $NB_USER && mkdir $HOME/.ssh && chown -R $NB_USER:users $HOME 
