@@ -2,16 +2,21 @@
 
 #Script to setup VM
 
-#apt update && apt -y upgrade
-#ln -s /bin/true /usr/local/bin/systemctl 
+apt update && apt -y upgrade
+
+groupadd -r mongodb && useradd -r -g mongodb mongodb
+
+apt update && DEBIAN_FRONTEND='noninteractive' apt install -y wget curl gnupg apt-transport-https
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4 
+wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | apt-key add -
+echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+apt update
 apt install -y mongodb-org-shell mongodb-org-server \
     mongodb-org-tools mongodb-org-mongos \
     libssl-dev \
     libcurl4-openssl-dev \
     openssh-server \
     lsof sudo \
-    sssd \
-    sssd-tools \
     vim \
     git \
     curl lsb-release \
