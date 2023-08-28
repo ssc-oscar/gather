@@ -8,16 +8,17 @@
 # second stage typically requires a much larger disk to store *.heads
 # all *.heads need to be copied to da cluster
 
-git ls-remote bb:swsc/lookup
-git ls-remote gh:fdac20/news
-git ls-remote gh:php/php-src
-git ls-remote gl:inkscape/inkscape
-git ls-remote gl_gnome:GNOME/gtk
-git ls-remote dr:project/drupal
-git ls-remote deb:dpkg-team/dpkg
+## Test remotes
+#git ls-remote bb:swsc/lookup
+#git ls-remote gh:fdac20/news
+#git ls-remote gh:php/php-src
+#git ls-remote gl:inkscape/inkscape
+#git ls-remote gl_gnome:GNOME/gtk
+#git ls-remote dr:project/drupal
+#git ls-remote deb:dpkg-team/dpkg
 
 DT=202308
-DTdash=2023-08-14
+DTdash=2023-08-28
 PDT=202303
 PDTdash=2023-03-06
 
