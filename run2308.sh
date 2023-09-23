@@ -18,7 +18,7 @@
 #git ls-remote deb:dpkg-team/dpkg
 
 DT=202308
-DTdash=2023-08-28
+DTdash=2023-08-30
 PDT=202303
 PDTdash=2023-03-06
 
@@ -42,9 +42,9 @@ T=$(date -d"$DTdash" +%s)
 # done > tokens_date
 
 # 1) Github scrape: Requires tokens
-# Ran: token_date_01
-# Next: token_date_02
-for i in {1..31}; do (r=$(head -$i token_date_01|tail -1); echo $r | python3 ghUpdatedRepos.py gh$DT repos  &> ghReposList$(echo $r | cut -d ' ' -f2).updt) & done
+# Ran: token_date_01, .._02, .._03, .._04, .._05, .._06, .._redo
+# Next: done!
+# for i in {1..31}; do (r=$(head -$i token_date_redo|tail -1); echo $r | python3 ghUpdatedRepos.py gh$DT repos  &> ghReposList$(echo $r | cut -d ' ' -f2).updt) & done
 
 # # 2) BitBucket scrape
 # # BB: need to extract all, no way to check for updated ones
@@ -58,8 +58,9 @@ for i in {1..31}; do (r=$(head -$i token_date_01|tail -1); echo $r | python3 ghU
 # python3 bbRepos.py 2019-05-03 bitbucket$DT 2020-05-01 &> bbRepos${DT}8.out &
 # python3 bbRepos.py 2020-05-03 bitbucket$DT 2021-05-01 &> bbRepos${DT}9.out &
 # python3 bbRepos.py 2021-05-01 bitbucket$DT 2022-05-03 &> bbRepos${DT}10.out &
+# python3 bbRepos.py 2022-05-03 bitbucket$DT 2023-05-03 &> bbRepos${DT}11.out &
 # # get only new, use heads for existing repos
-# python3 bbRepos.py 2022-05-03 bitbucket$DT 2023-05-03 &> bbRepos${DT}0.out &
+# python3 bbRepos.py 2023-05-03 bitbucket$DT 2024-05-03 &> bbRepos${DT}0.out &
 
 # # 3) SF scrape
 # # SF 
@@ -93,37 +94,38 @@ for i in {1..31}; do (r=$(head -$i token_date_01|tail -1); echo $r | python3 ghU
 # while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; 
 # done | gzip > bioconductor.org.$DT.heads &
 
-# # wget "blitiri.com.ar/git/"  -O blitiri.com.ar.html
-# wget "blitiri.com.ar/git/" --no-check-certificate -O blitiri.com.ar.html
+# wget "blitiri.com.ar/git/"  -O blitiri.com.ar.html
+# # wget "blitiri.com.ar/git/" --no-check-certificate -O blitiri.com.ar.html
 # grep '<td class="name"><a href="' blitiri.com.ar.html|sed 's|^\s*<td class="name"><a href="||;s|".*||' | sort -u | awk '{print "https://blitiri.com.ar/git/"$1}' > blitiri.com.ar.$DT
 
 # # fedorapeople.org
 # u=fedorapeople.org
-# wget "https://$u" --no-check-certificate -O $u.html
+# wget "https://$u" -O $u.html
+# # wget "https://$u" --no-check-certificate -O $u.html
 # grep 'Git repositories' $u.html|sed 's|<a href="||;s|".*||;s|^\s*||' | sort -u > $u.$DT
 
 # u=code.qt.io
-# wget "https://$u/cgit/"  -O  $u.html
+# wget "https://$u/cgit/" -O  $u.html
 # grep 'toplevel-repo' $u.html| sed "s|.*href='/cgit/|/cgit/|;s|'.*||"|sort -u | awk '{print "https://'$u'"$1}' > $u.$DT
 
 # u=git.alpinelinux.org
-# # wget "https://$u" -O $u.html
-# wget "https://$u" --no-check-certificate -O $u.html
+# wget "https://$u" -O $u.html
+# # wget "https://$u" --no-check-certificate -O $u.html
 # grep 'toplevel-repo' $u.html | sed "s|.*href='/|/|;s|'.*||"|sort -u | awk '{print "https://'$u'"$1}' > $u.$DT
 
 # u=git.openembedded.org 
-# # wget "https://$u" -O $u.html
-# wget "https://$u" --no-check-certificate -O $u.html
+# wget "https://$u" -O $u.html
+# # wget "https://$u" --no-check-certificate -O $u.html
 # grep 'toplevel-repo' $u.html | sed "s|.*' href='/|/|;s|'.*||"|sort -u | awk '{print "https://'$u'"$1}' > $u.$DT
 
 # for u in git.torproject.org git.xfce.org git.yoctoproject.org
-# # do wget "https://$u" -O $u.html
-# do wget "https://$u" --no-check-certificate -O $u.html
+# do wget "https://$u" -O $u.html
+# #do wget "https://$u" --no-check-certificate -O $u.html
 # grep -E '(sublevel|toplevel)-repo' $u.html | sed "s|.*' href='/|/|;s|'.*||"|sort -u | awk '{print "https://'$u'"$1}' > $u.$DT
 # done
 
-# # wget "https://repo.or.cz/?a=project_list" -O cz.html
-# wget "https://repo.or.cz/?a=project_list" --no-check-certificate -O cz.html
+# wget "https://repo.or.cz/?a=project_list" -O cz.html
+# # wget "https://repo.or.cz/?a=project_list" --no-check-certificate -O cz.html
 # grep '\.git' cz.html  | sed 's|.*"/\([^/"]*\.git\).*|\1|' | uniq | sort -u | awk '{print "https://repo.or.cz/"$1}'> repo.or.cz.$DT
 # cat repo.or.cz.$DT | \
 # while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; 
@@ -135,22 +137,22 @@ for i in {1..31}; do (r=$(head -$i token_date_01|tail -1); echo $r | python3 ghU
 # echo https://gcc.gnu.org/git/gcc.git > gcc.git.$DT
 
 # for i in {1..50}
-# # do wget "https://pagure.io/?page=$i&sorting=None" -O pagure.io.html
-# do wget "https://pagure.io/?page=$i&sorting=None" --no-check-certificate -O pagure.io.html
+# do wget "https://pagure.io/?page=$i&sorting=None" -O pagure.io.html
+# # do wget "https://pagure.io/?page=$i&sorting=None" --no-check-certificate -O pagure.io.html
 #    grep '^\s*<a href="/' pagure.io.html |sed 's|^\s*<a href="||;s|".*||'|grep -Ev '^/(about|ssh_info)$' 
 # done | uniq | sort -u | awk '{print "https://pagure.io"$1}' > pagure.io.$DT 
 
 # u=notabug.org	 
 # for i in {1..50}
-# # do wget "https://$u/explore/repos?page=$i&q=" -O $u.html
-# do wget "https://$u/explore/repos?page=$i&q=" --no-check-certificate -O $u.html
+# do wget "https://$u/explore/repos?page=$i&q=" -O $u.html
+# # do wget "https://$u/explore/repos?page=$i&q=" --no-check-certificate -O $u.html
 #    grep '<a class="name" href="/' $u.html |sed 's|<a class="name" href="/|/|;s|".*||'
 # done |sort -u | awk '{print "https://'$u'"$1}' >  $u.$DT
 
 # for u in framagit.org gitlab.adullact.net code.ill.fr forgemia.inra.fr git.unicaen.fr git.unistra.fr git.pleroma.social gitlab.fing.edu.uy gitlab.huma-num.fr  gitlab.irstea.fr gitlab.cerema.fr gite.lirmm.fr gitlab.common-lisp.net 
 # do for i in {1..50}
-# # do sleep 2; wget "https://$u/explore/projects?non_archived=true&page=$i&sort=name_asc" -O $u.html
-# do sleep 2; wget "https://$u/explore/projects?non_archived=true&page=$i&sort=name_asc" --no-check-certificate -O $u.html
+# do sleep 2; wget "https://$u/explore/projects?non_archived=true&page=$i&sort=name_asc" -O $u.html
+# # do sleep 2; wget "https://$u/explore/projects?non_archived=true&page=$i&sort=name_asc" --no-check-certificate -O $u.html
 #     grep '<a class="project" href="' $u.html | sed 's|<a class="project" href="||;s|".*||' 
 # done | uniq | sort -u | awk '{print "https://'$u'"$1}' >  $u.$DT  
 # done
@@ -158,22 +160,22 @@ for i in {1..31}; do (r=$(head -$i token_date_01|tail -1); echo $r | python3 ghU
 # for u in gitlab.freedesktop.org gitlab.inria.fr gitlab.ow2.org 0xacab.org invent.kde.org 
 # do for i in {1..50}
 #    do for o in latest_activity_desc name_asc name_desc created_desc created_asc 
-# #      do sleep 2; wget "https://$u/explore/projects?non_archived=true&page=$i&sort=$o" -O $u.html
-#       do sleep 2; wget "https://$u/explore/projects?non_archived=true&page=$i&sort=$o" --no-check-certificate -O $u.html
+#       do sleep 2; wget "https://$u/explore/projects?non_archived=true&page=$i&sort=$o" -O $u.html
+# #       do sleep 2; wget "https://$u/explore/projects?non_archived=true&page=$i&sort=$o" --no-check-certificate -O $u.html
 #        grep '<a class="project" href="' $u.html | sed 's|<a class="project" href="||;s|".*||' 
 #       done
 #    done | uniq | sort -u | awk '{print "https://'$u'"$1}' >  $u.a.$DT  
 #    for i in {1..50}
 #    do for o in latest_activity_desc name_asc name_desc created_desc created_asc
-# #     do sleep 2; wget "https://$u/explore/projects/starred?non_archived=true&page=$i&sort=$o" -O $u.html
-#      do sleep 2; wget "https://$u/explore/projects/starred?non_archived=true&page=$i&sort=$o" --no-check-certificate -O $u.html
+#      do sleep 2; wget "https://$u/explore/projects/starred?non_archived=true&page=$i&sort=$o" -O $u.html
+# #      do sleep 2; wget "https://$u/explore/projects/starred?non_archived=true&page=$i&sort=$o" --no-check-certificate -O $u.html
 #       grep '<a class="project" href="' $u.html | sed 's|<a class="project" href="||;s|".*||'
 #      done
 #    done | uniq | sort -u | awk '{print "https://'$u'"$1}' >  $u.s.$DT  
 #    for i in {1..50}
 #    do for o in latest_activity_desc name_asc name_desc created_desc created_asc
-# #     do sleep 2; wget "https://$u/explore/projects/trending?non_archived=true&page=$i&sort=$o" -O $u.html
-#      do sleep 2; wget "https://$u/explore/projects/trending?non_archived=true&page=$i&sort=$o" --no-check-certificate -O $u.html
+#      do sleep 2; wget "https://$u/explore/projects/trending?non_archived=true&page=$i&sort=$o" -O $u.html
+# #      do sleep 2; wget "https://$u/explore/projects/trending?non_archived=true&page=$i&sort=$o" --no-check-certificate -O $u.html
 #         grep '<a class="project" href="' $u.html | sed 's|<a class="project" href="||;s|".*||' 
 #       done
 #    done | uniq | sort -u | awk '{print "https://'$u'"$1}' >  $u.t.$DT  
@@ -199,7 +201,8 @@ for i in {1..31}; do (r=$(head -$i token_date_01|tail -1); echo $r | python3 ghU
 # # * git.savannah.nongnu.org.$DT
 
 # # fedorapeople.org.$DT list peoples git websites: need to append /public_git/ to get their projects
-# cat fedorapeople.org.$DT|sed 's|^\s*||'|while read r; do wget "$r/public_git" --no-check-certificate -O -; done >  fedorapeople.org.fix.$DT.html
+# cat fedorapeople.org.$DT|sed 's|^\s*||'|while read r; do wget "$r/public_git" -O -; done >  fedorapeople.org.fix.$DT.html
+# # cat fedorapeople.org.$DT|sed 's|^\s*||'|while read r; do wget "$r/public_git" --no-check-certificate -O -; done >  fedorapeople.org.fix.$DT.html
 # grep /public_git/  fedorapeople.org.fix.$DT.html|  sed "s|.* href='/cgit/||;s|'.*||;s|/tree/$||;s|^|https://fedorapeople.org/cgit/|" | sort -u > fedorapeople.org.fix.$DT
 
 # #git.pleroma.social.$DT - seems not to allow listing
@@ -214,11 +217,13 @@ for i in {1..31}; do (r=$(head -$i token_date_01|tail -1); echo $r | python3 ghU
 # # insert username/password to prevend password requests
 # # UPDATE: Max number of pages is 50 (3/15/23)
 # for p in {1..50}
-# do sleep 2; wget "https://gitlab.gnome.org/explore/projects?page=$p" --no-check-certificate -O - 2> /dev/null | perl -ane 'chop();if (m|^<a class="project" href="|){s|<a class="project" href="||;s|".*||;s|^/||;print "https://a:a\@gitlab.gnome.org/$_\n"}'
+# do sleep 2; wget "https://gitlab.gnome.org/explore/projects?page=$p" -O - 2> /dev/null | perl -ane 'chop();if (m|^<a class="project" href="|){s|<a class="project" href="||;s|".*||;s|^/||;print "https://a:a\@gitlab.gnome.org/$_\n"}'
+# # do sleep 2; wget "https://gitlab.gnome.org/explore/projects?page=$p" --no-check-certificate -O - 2> /dev/null | perl -ane 'chop();if (m|^<a class="project" href="|){s|<a class="project" href="||;s|".*||;s|^/||;print "https://a:a\@gitlab.gnome.org/$_\n"}'
 # done | sort -u > gitlab.gnome.org.$DT
 
 # for p in {1..50}
-# do sleep 2;wget "https://gitlab.gnome.org/explore/projects?page=$p&sort=latest_activity_desc" --no-check-certificate -O - 2> /dev/null | perl -ane 'chop();if (m|^<a class="project" href="|){s|<a class="project" href="||;s|".*||;s|^/||;print "https://a:a\@gitlab.gnome.org/$_\n"}'
+# do sleep 2;wget "https://gitlab.gnome.org/explore/projects?page=$p&sort=latest_activity_desc" -O - 2> /dev/null | perl -ane 'chop();if (m|^<a class="project" href="|){s|<a class="project" href="||;s|".*||;s|^/||;print "https://a:a\@gitlab.gnome.org/$_\n"}'
+# # do sleep 2;wget "https://gitlab.gnome.org/explore/projects?page=$p&sort=latest_activity_desc" --no-check-certificate -O - 2> /dev/null | perl -ane 'chop();if (m|^<a class="project" href="|){s|<a class="project" href="||;s|".*||;s|^/||;print "https://a:a\@gitlab.gnome.org/$_\n"}'
 # done | sort -u > gitlab.gnome.org_latest.$DT
 
 # cat gitlab.gnome.org.$DT gitlab.gnome.org_latest.$DT | sort -u | while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; done | gzip > gitlab.gnome.org.$DT.heads &
@@ -243,9 +248,9 @@ for i in {1..31}; do (r=$(head -$i token_date_01|tail -1); echo $r | python3 ghU
 
 # # there are totally 2398 pages in https://git.drupalcode.org/explore/projects
 # # Again, max 50. Need to use API
-# # thost="https://git.drupalcode.org/explore/projects?page="
-# # i=0
-# # rm drupal.org
+# thost="https://git.drupalcode.org/explore/projects?page="
+# i=0
+# rm drupal.org
 # for i in {1..50}
 # do 
 #   rhost="$thost$i".'&sort=latest_activity_desc';
@@ -290,7 +295,8 @@ for i in {1..31}; do (r=$(head -$i token_date_01|tail -1); echo $r | python3 ghU
 
 # # ###
 
-# wget https://git.zx2c4.com --no-check-certificate -O git.zx2c4.com.html
+# wget https://git.zx2c4.com -O git.zx2c4.com.html
+# # wget https://git.zx2c4.com --no-check-certificate -O git.zx2c4.com.html
 # perl -ane "while (m|<td class='toplevel-repo'><a title='([^']*)'|g){print \"https://git.zx2c4.com/\$1\n\";}" < git.zx2c4.com.html > git.zx2c4.com.$DT
 # cat git.zx2c4.com.$DT | \
 # while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g';
@@ -312,73 +318,76 @@ for i in {1..31}; do (r=$(head -$i token_date_01|tail -1); echo $r | python3 ghU
 # " < git.savannah.nongnu.org.html | sed 's|/cgit/|/git/|' | sort -u  > git.savannah.gnu.org.$DT; 
 # cat git.savannah.gnu.org.$DT | while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; done | gzip > git.savannah.gnu.org.$DT.heads &
 
-# wget http://git.savannah.nongnu.org/cgit --no-check-certificate -O git.savannah.nongnu.org.html
+# wget http://git.savannah.nongnu.org/cgit -O git.savannah.nongnu.org.html
+# # wget http://git.savannah.nongnu.org/cgit --no-check-certificate -O git.savannah.nongnu.org.html
 # perl -ane 'if (m|.*noalyss.git/(.*)/tree|){print "https://git.savannah.nongnu.org/git/$1\n";}' < git.savannah.nongnu.org.html | sed 's|/cgit/|/git/|' | sort -u  > git.savannah.nongnu.org.$DT
 # cat git.savannah.nongnu.org.$DT | while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; done | gzip > git.savannah.nongnu.org.$DT.heads &
 
-# wget http://git.kernel.org --no-check-certificate  -O git.kernel.org.html
+# wget http://git.kernel.org -O git.kernel.org.html
+# # wget http://git.kernel.org --no-check-certificate  -O git.kernel.org.html
 # perl -ane "while (m|<td class='sublevel-repo'><a title='[^']*' href='([^']*)'|g){print \"https://git.kernel.org\$1\n\";}" < git.kernel.org.html > git.kernel.org.$DT
 # cat git.kernel.org.$DT | while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; done | gzip > git.kernel.org.$DT.heads &
 
-# # #get old repos for gh, these may have changed again
-# # python3 listU.py gh$PDT repos '{}' nameWithOwner | sed "s|^b'||;s|'$||" | sort -u > gh$PDT.u
-# # split -n l/50 -da2 gh$PDT.u gh$PDT.u.
-# # for j in {00..49}
-# # do cat gh$PDT.u.$j | while read r; do
-# #   a=$(git ls-remote gh:$r | awk '{print ";"$1}'); echo gh:$r$a | sed 's/ //g';
-# #   done | gzip > gh$PDT.u.$j.heads &
-# # done
+
+# #get old repos for gh, these may have changed again
+# python3 listU.py gh$PDT repos '{}' nameWithOwner | sed "s|^b'||;s|'$||" | sort -u > gh$PDT.u
+# split -n l/50 -da2 gh$PDT.u gh$PDT.u.
+# for j in {00..49}
+# do cat gh$PDT.u.$j | while read r; do
+#   a=$(git ls-remote gh:$r | awk '{print ";"$1}'); echo gh:$r$a | sed 's/ //g';
+#   done | gzip > gh$PDT.u.$j.heads &
+# done
 
 
 # # wait
 
 
 
-# # Get update repos for GL
-# python3 listU.py gl$DT repos '{ "last_activity_at" : { "$gt" : "'"$PDTdash"'" }}' http_url_to_repo | sed "s|^b'||;s|'$||"|sort -u > gl$DT.new 
-# cat  gl$DT.new | sed 's|https://gitlab.com/|gl:|' | while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; 
-# done | gzip > gl$DT.new.heads &
+# Get update repos for GL
+python3 listU.py gl$DT repos '{ "last_activity_at" : { "$gt" : "'"$PDTdash"'" }}' http_url_to_repo | sed "s|^b'||;s|'$||"|sort -u > gl$DT.new 
+cat  gl$DT.new | sed 's|https://gitlab.com/|gl:|' | while read r; do a=$(git ls-remote $r | awk '{print ";"$1}'); echo $r$a|sed 's/ //g'; 
+done | gzip > gl$DT.new.heads &
 
-# # Get updated, no-forks for GH
-# #python3 listU.py gh$DT repos '{"isFork" : false}' nameWithOwner | sed "s|^b'||;s|'$||" | sort -u > gh$DT.u
-# python3 listU.py gh$DT repos '{ "pushedAt" : { "$gt" : "'"$PDTdash"'"} }' nameWithOwner | sed "s|^b'||;s|'$||" | sort -u > gh$DT.u
-# # cat gh$PDT.u.*[0-9] | sort -t\; | join -t\; -v2 - gh$DT.u > gh$DT.new.u
-# split -n l/50 -da2 gh$DT.u gh$DT.u.
+# Get updated, no-forks for GH
+#python3 listU.py gh$DT repos '{"isFork" : false}' nameWithOwner | sed "s|^b'||;s|'$||" | sort -u > gh$DT.u
+python3 listU.py gh$DT repos '{ "pushedAt" : { "$gt" : "'"$PDTdash"'"} }' nameWithOwner | sed "s|^b'||;s|'$||" | sort -u > gh$DT.u
+# cat gh$PDT.u.*[0-9] | sort -t\; | join -t\; -v2 - gh$DT.u > gh$DT.new.u
+split -n l/50 -da2 gh$DT.u gh$DT.u.
 
-# for j in {00..12}
-# do cat gh$DT.u.$j | while read r; do
-#   a=$(git ls-remote gh:$r | awk '{print ";"$1}'); echo gh:$r$a | sed 's/ //g';
-#   done | gzip > gh$DT.u.$j.heads &
-# done
-# for j in {13..26}
-# do cat gh$DT.u.$j | while read r; do
-#   a=$(git ls-remote gh:$r | awk '{print ";"$1}'); echo gh:$r$a | sed 's/ //g';
-#   done | gzip > gh$DT.u.$j.heads &
-# done
-# for j in {26..38}
-# do cat gh$DT.u.$j | while read r; do
-#   a=$(git ls-remote gh:$r | awk '{print ";"$1}'); echo gh:$r$a | sed 's/ //g';
-#   done | gzip > gh$DT.u.$j.heads &
-# done
-# for j in {39..49}
-# do cat gh$DT.u.$j | while read r; do
-#   a=$(git ls-remote gh:$r | awk '{print ";"$1}'); echo gh:$r$a | sed 's/ //g';
-#   done | gzip > gh$DT.u.$j.heads &
-# done
-
-
+for j in {00..12}
+do cat gh$DT.u.$j | while read r; do
+  a=$(git ls-remote gh:$r | awk '{print ";"$1}'); echo gh:$r$a | sed 's/ //g';
+  done | gzip > gh$DT.u.$j.heads &
+done
+for j in {13..26}
+do cat gh$DT.u.$j | while read r; do
+  a=$(git ls-remote gh:$r | awk '{print ";"$1}'); echo gh:$r$a | sed 's/ //g';
+  done | gzip > gh$DT.u.$j.heads &
+done
+for j in {26..38}
+do cat gh$DT.u.$j | while read r; do
+  a=$(git ls-remote gh:$r | awk '{print ";"$1}'); echo gh:$r$a | sed 's/ //g';
+  done | gzip > gh$DT.u.$j.heads &
+done
+for j in {39..49}
+do cat gh$DT.u.$j | while read r; do
+  a=$(git ls-remote gh:$r | awk '{print ";"$1}'); echo gh:$r$a | sed 's/ //g';
+  done | gzip > gh$DT.u.$j.heads &
+done
 
 
 
-# # # Get updated bb (do heads on all 2M?)
-# python3 listU.py bitbucket$DT repos '{ "updated_on" : { "$gt" : "'"$PDTdash"'" } }' full_name | \
-#    sed "s|^b'||;s|'$||" | sort -u > bitbucket$DT.new
-# split -n l/10 -da1 bitbucket$DT.new bitbucket$DT.new.
-# for j in {0..9}
-# do cat bitbucket$DT.new.$j | while read r; do
-#   a=$(git ls-remote bb:$r | awk '{print ";"$1}'); echo bb:$r$a | sed 's/ //g';
-#   done | gzip > bitbucket$DT.new.$j.heads &
-# done
+
+
+# # Get updated bb (do heads on all 2M?)
+python3 listU.py bitbucket$DT repos '{ "updated_on" : { "$gt" : "'"$PDTdash"'" } }' full_name | \
+   sed "s|^b'||;s|'$||" | sort -u > bitbucket$DT.new
+split -n l/10 -da1 bitbucket$DT.new bitbucket$DT.new.
+for j in {0..9}
+do cat bitbucket$DT.new.$j | while read r; do
+  a=$(git ls-remote bb:$r | awk '{print ";"$1}'); echo bb:$r$a | sed 's/ //g';
+  done | gzip > bitbucket$DT.new.$j.heads &
+done
 
 # # wait
 
@@ -387,5 +396,5 @@ for i in {1..31}; do (r=$(head -$i token_date_01|tail -1); echo $r | python3 ghU
 # # #${un[$i]} ${ps[$i]} 
 
 # for i in sf bitbucket gl gh
-#   do mongodump -d ${i}202303 --gzip
+#   do mongodump -d ${i}202308 --gzip
 # done
