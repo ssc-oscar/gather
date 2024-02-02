@@ -26,6 +26,7 @@ def gatherData (res):
   #dt = res['data']['search']['nodes']
   for i in repos:
     coll.insert(i)
+    timestamp = _id.toString().substring(0,8)
     #for repo in repos:
     #  coll.insert({**repo['node'],**{'period': begin}})
   total += len(repos)
@@ -36,12 +37,18 @@ def gatherData (res):
 # dict mapping for splitting the day into hour sections 
 def tokenperiod(token_id):
     switcher = {
-        "0": "T00:00:00Z-T04:00:00Z",
-        "1": "T04:00:00Z-T08:00:00Z",
-        "2": "T08:00:00Z-T12:00:00Z",
-        "3": "T12:00:00Z-T16:00:00Z",
-        "4": "T16:00:00Z-T20:00:00Z",
-        "5": "T20:00:00Z-T00:00:00Z",
+        # "0": "T00:00:00Z-T04:00:00Z",
+        # "1": "T04:00:00Z-T08:00:00Z",
+        # "2": "T08:00:00Z-T12:00:00Z",
+        # "3": "T12:00:00Z-T16:00:00Z",
+        # "4": "T16:00:00Z-T20:00:00Z",
+        # "5": "T20:00:00Z-T00:00:00Z",
+        "0": "T00:00:00Z-T00:10:00Z",
+        "1": "T00:10:00Z-T00:20:00Z",
+        "2": "T00:20:00Z-T00:30:00Z",
+        "3": "T00:30:00Z-T00:40:00Z",
+        "4": "T00:40:00Z-T00:50:00Z",
+        "5": "T00:50:00Z-T01:00:00Z",
     }
 
     return switcher.get(token_id, "invalid")
@@ -73,14 +80,15 @@ collName = sys.argv[2] # coll name as third arga
 
 db = client[dbName]
 coll = db[collName]
+#coll1 = db[validation_test]
 
 url = 'https://api.github.com/graphql'
 headers = {'Authorization': 'token ' + token}
 total = 0
 remaining = 5000
 
-print (end_time.strftime("%Y-%m-%dT%H:%M:%SZ"))
-print (interval.strftime("%Y-%m-%dT%H:%M:%SZ"))
+print ("Begin: " + interval.strftime("%Y-%m-%dT%H:%M:%SZ"))
+print ("End: " + end_time.strftime("%Y-%m-%dT%H:%M:%SZ"))
 
 # query that specifies which repos and what content to extract
 query = '''{
@@ -127,6 +135,7 @@ while (interval < end_time):
   r = requests.post(url=url, json=jsonS, headers=headers)
   if r.ok:
     try:
+      print ("#1: " + url)
       res = json.loads(r.content)
       print("did it come here? {}".format(res['data']['search']['pageInfo']))
       remaining = res['data']['rateLimit']['remaining']
@@ -137,6 +146,10 @@ while (interval < end_time):
       repos = res['data']['search']['repositoryCount']
       hasNextPage = res['data']['search']['pageInfo']['hasNextPage']
       gatherData(res)
+
+      # enter url -- check what information has
+      # create a log with the primaries
+      print ("#2: " + url)
 
       # check if we got more than 100 results and need to paginate
       while (repos > 100 and hasNextPage):
@@ -157,9 +170,19 @@ while (interval < end_time):
             repos = res['data']['search']['repositoryCount']
             hasNextPage = res['data']['search']['pageInfo']['hasNextPage']
             gatherData(res)
+
+            # enter url -- check for extra page
+            print ("#3: " + url)
+
           except Exception as e:
+            
+            # record that r is not ok
+            
             print(e)
     except Exception as e:
+      
+      # record that r is not ok
+      
       print(e)
   interval += timedelta(minutes=10)
 
