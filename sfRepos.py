@@ -62,7 +62,7 @@ for i in range(0, 173):
 
 # Insert all projects into collection
 for i, proj in enumerate(itertools.islice(projects, len(projects))):
-    coll.insert({"url": proj, "source": "SourceForge", "git": None})
+    coll.insert_one({"url": proj, "source": "SourceForge", "git": None})
 
 # Print how many projects we found
 print("# projects: " + str(len(projects)))
