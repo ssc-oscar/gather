@@ -56,8 +56,9 @@ def get(page):
         print('Download ERROR: ', str(e))
 
 # Driver loop to get all 172 site mappings
+# This has been dropped down to 0-122 site mappings
 # Number of mappings found at https://sourceforge.net/sitemap.xml
-for i in range(0, 173):
+for i in range(0, 122):
     get(i)
 
 # Insert all projects into collection

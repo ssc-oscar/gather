@@ -4,8 +4,6 @@ import requests, time
 
 
 jsonDict = {}
-#url = 'https://api.bitbucket.org/2.0/repositories/?pagelen=100&after=2017-11-18'
-#url = 'https://api.bitbucket.org/2.0/repositories/?pagelen=100&before='+sys.argv[2]+'&after='+sys.argv[1]
 url = 'https://api.bitbucket.org/2.0/repositories/?pagelen=100&after='+sys.argv[1]
 before = ''
 if len(sys.argv) > 3:
@@ -36,7 +34,7 @@ while True:
      continue
   if 'values' in jsonDict:
     for prj in jsonDict ['values']:
-      coll .insert (prj) 
+      coll.insert_one(prj) 
   if 'next' not in jsonDict:
     print ("no next")    
     for k in jsonDict.keys ():
@@ -46,7 +44,7 @@ while True:
   else: 
     url = jsonDict['next']
     after=re.sub(r'T.*', '', re.sub(r'.*after=', '', url))
-    if before is not '' and after > before:
-       break
+    if before != '' and after > before:  # Changed `is not` to `!=`
+      break
     print ('next='+str(url))
 

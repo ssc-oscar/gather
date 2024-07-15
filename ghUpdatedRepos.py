@@ -77,7 +77,7 @@ def gatherData (res):
   repos = res['data']['search']['nodes']
   #dt = res['data']['search']['nodes']
   for i in repos:
-    coll.insert(i)
+    coll.insert_one(i)
     #for repo in repos:
     #  coll.insert({**repo['node'],**{'period': begin}})
   total += len(repos)

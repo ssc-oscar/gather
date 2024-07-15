@@ -17,10 +17,10 @@
 #git ls-remote dr:project/drupal
 #git ls-remote deb:dpkg-team/dpkg
 
-DT=202308
-DTdash=2023-08-30
-PDT=202303
-PDTdash=2023-03-06
+DT=202402
+DTdash=2024-02-20
+PDT=202308
+PDTdash=2023-08-30
 
 PT=$(date -d"$PDTdash" +%s)
 T=$(date -d"$DTdash" +%s)
