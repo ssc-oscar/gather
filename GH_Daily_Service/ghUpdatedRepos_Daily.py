@@ -10,30 +10,85 @@ from datetime import datetime, timedelta
 import time
 import sys
 
-# get start and end date, and GITHUB API token from command line
-token, begin, end = sys.stdin.readline().strip().split(' ')
+# Functions
 
-try:
-  datetime.strptime(begin, '%Y-%m-%d')
-  datetime.strptime(end, '%Y-%m-%d')
-except ValueError:
-  raise ValueError("Incorrect beginning date format, should be YYYY-MM-DD")
+# wait for reset if we exhaust our number of calls
+def wait(reset):
+  now = datetime.now()
+  then = datetime.strptime(reset, "%Y-%m-%dT%H:%M:%SZ")
+  wait = (then-now).total_seconds() + 30
+  time.sleep(wait)
+
+# helper function to loop through and insert repos into mongo db
+def gatherData (res):
+  global total
+  repos = res['data']['search']['nodes']
+  #dt = res['data']['search']['nodes']
+  for i in repos:
+    coll.insert(i)
+    timestamp = _id.toString().substring(0,8)
+    #for repo in repos:
+    #  coll.insert({**repo['node'],**{'period': begin}})
+  total += len(repos)
+
+  output = "Got {} repos. Total count is {}. Have {} calls remaining."
+  print (output.format(len(repos), total, remaining))
+
+# dict mapping for splitting the day into hour sections 
+def tokenperiod(token_id):
+    switcher = {
+        # "0": "T00:00:00Z-T04:00:00Z",
+        # "1": "T04:00:00Z-T08:00:00Z",
+        # "2": "T08:00:00Z-T12:00:00Z",
+        # "3": "T12:00:00Z-T16:00:00Z",
+        # "4": "T16:00:00Z-T20:00:00Z",
+        # "5": "T20:00:00Z-T00:00:00Z",
+        "0": "T00:00:00Z-T00:10:00Z",
+        "1": "T00:10:00Z-T00:20:00Z",
+        "2": "T00:20:00Z-T00:30:00Z",
+        "3": "T00:30:00Z-T00:40:00Z",
+        "4": "T00:40:00Z-T00:50:00Z",
+        "5": "T00:50:00Z-T01:00:00Z",
+    }
+
+    return switcher.get(token_id, "invalid")
+
+# Main
+
+# get num for token and GITHUB API token from command line
+token_id, token = sys.stdin.readline().strip().split(' ')
+
+start_tokper, end_tokper = tokenperiod(token_id).split('-')
+
+date = datetime.today()
+
+begin = date - timedelta(days = 1)
+start = begin.strftime("%Y-%m-%d") + start_tokper
+
+if token_id == "5":
+  end_toStr = date.strftime("%Y-%m-%d") + end_tokper
+else:
+  end_toStr = begin.strftime("%Y-%m-%d") + end_tokper
+
+end_time = datetime.strptime(end_toStr, "%Y-%m-%dT%H:%M:%SZ")
+interval = datetime.strptime(start, "%Y-%m-%dT%H:%M:%SZ")
 
 # DB info
 client = pymongo.MongoClient()
 dbName = sys.argv[1] # db name as second arg
-collName = sys.argv[2] # coll name as third arg
+collName = sys.argv[2] # coll name as third arga
 
 db = client[dbName]
 coll = db[collName]
+#coll1 = db[validation_test]
 
 url = 'https://api.github.com/graphql'
 headers = {'Authorization': 'token ' + token}
-start = begin + 'T00:00:00Z'
-end_time = datetime.strptime(end + 'T00:00:00Z', "%Y-%m-%dT%H:%M:%SZ")
-interval = datetime.strptime(start, "%Y-%m-%dT%H:%M:%SZ")
 total = 0
 remaining = 5000
+
+print ("Begin: " + interval.strftime("%Y-%m-%dT%H:%M:%SZ"))
+print ("End: " + end_time.strftime("%Y-%m-%dT%H:%M:%SZ"))
 
 # query that specifies which repos and what content to extract
 query = '''{
@@ -64,26 +119,6 @@ query = '''{
 }'''
 jsonS = { 'query': query }
 
-# wait for reset if we exhaust our number of calls
-def wait(reset):
-  now = datetime.now()
-  then = datetime.strptime(reset, "%Y-%m-%dT%H:%M:%SZ")
-  wait = (then-now).total_seconds() + 30
-  time.sleep(wait)
-
-# helper function to loop through and insert repos into mongo db
-def gatherData (res):
-  global total
-  repos = res['data']['search']['nodes']
-  #dt = res['data']['search']['nodes']
-  for i in repos:
-    coll.insert_one(i)
-    #for repo in repos:
-    #  coll.insert({**repo['node'],**{'period': begin}})
-  total += len(repos)
-
-  output = "Got {} repos. Total count is {}. Have {} calls remaining."
-  print (output.format(len(repos), total, remaining))
 
 # driver loop that iterates through repos in 10 minute intervals
 # iterates from the specified date up to the current time
@@ -100,6 +135,7 @@ while (interval < end_time):
   r = requests.post(url=url, json=jsonS, headers=headers)
   if r.ok:
     try:
+      print ("#1: " + url)
       res = json.loads(r.content)
       print("did it come here? {}".format(res['data']['search']['pageInfo']))
       remaining = res['data']['rateLimit']['remaining']
@@ -110,6 +146,10 @@ while (interval < end_time):
       repos = res['data']['search']['repositoryCount']
       hasNextPage = res['data']['search']['pageInfo']['hasNextPage']
       gatherData(res)
+
+      # enter url -- check what information has
+      # create a log with the primaries
+      print ("#2: " + url)
 
       # check if we got more than 100 results and need to paginate
       while (repos > 100 and hasNextPage):
@@ -130,9 +170,19 @@ while (interval < end_time):
             repos = res['data']['search']['repositoryCount']
             hasNextPage = res['data']['search']['pageInfo']['hasNextPage']
             gatherData(res)
+
+            # enter url -- check for extra page
+            print ("#3: " + url)
+
           except Exception as e:
+            
+            # record that r is not ok
+            
             print(e)
     except Exception as e:
+      
+      # record that r is not ok
+      
       print(e)
   interval += timedelta(minutes=10)
 

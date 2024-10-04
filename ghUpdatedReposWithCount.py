@@ -26,6 +26,7 @@ collName = sys.argv[2] # coll name as third arg
 
 db = client[dbName]
 coll = db[collName]
+count_coll = db[f"{collName}_counts"]  # Separate collection for counts
 
 url = 'https://api.github.com/graphql'
 headers = {'Authorization': 'token ' + token}
@@ -56,7 +57,7 @@ query = '''{
           createdAt
           pushedAt
           id
-			 forkCount
+          forkCount
           description
         }
       }
@@ -72,15 +73,22 @@ def wait(reset):
   time.sleep(wait)
 
 # helper function to loop through and insert repos into mongo db
-def gatherData (res):
+def gatherData (res, period_start, period_end):
   global total
   repos = res['data']['search']['nodes']
-  #dt = res['data']['search']['nodes']
   for i in repos:
     coll.insert_one(i)
-    #for repo in repos:
-    #  coll.insert({**repo['node'],**{'period': begin}})
   total += len(repos)
+
+  # Store count information in the separate collection
+  count_info = {
+    "period_start": period_start,
+    "period_end": period_end,
+    "repository_count": res['data']['search']['repositoryCount'],
+    "captured_count": len(repos),
+    "timestamp": datetime.now()
+  }
+  count_coll.insert_one(count_info)
 
   output = "Got {} repos. Total count is {}. Have {} calls remaining."
   print (output.format(len(repos), total, remaining))
@@ -109,7 +117,7 @@ while (interval < end_time):
 
       repos = res['data']['search']['repositoryCount']
       hasNextPage = res['data']['search']['pageInfo']['hasNextPage']
-      gatherData(res)
+      gatherData(res, fromStr, toStr)
 
       # check if we got more than 100 results and need to paginate
       while (repos > 100 and hasNextPage):
@@ -129,10 +137,9 @@ while (interval < end_time):
               wait(reset)
             repos = res['data']['search']['repositoryCount']
             hasNextPage = res['data']['search']['pageInfo']['hasNextPage']
-            gatherData(res)
+            gatherData(res, fromStr, toStr)
           except Exception as e:
             print(e)
     except Exception as e:
       print(e)
   interval += timedelta(minutes=10)
-

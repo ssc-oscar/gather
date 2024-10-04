@@ -25,10 +25,10 @@ host gl_gnome
     
 
 host dr
-  user git
-  HostName git.drupal.org
-  IdentitiesOnly yes
-  IdentityFile ~/.ssh/id_rsa
+    User git
+    HostName git.drupal.org
+    IdentitiesOnly yes
+    IdentityFile ~/.ssh/id_rsa
 
 host deb
     User git
