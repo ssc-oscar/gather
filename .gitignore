@@ -1,6 +1,6 @@
 mongodb
 dump
-tokens*
+token*
 .nfs*
 *.out
 *.updt
@@ -9,8 +9,8 @@ tokens*
 *.prj
 *.prj.*
 *.err
-*.202303
-*.202303.*
+*.202410
+*.202410.*
 *.new
 *.new.*
 *.u
