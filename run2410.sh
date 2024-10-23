@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# run2406.sh
+# run2410.sh
 # In the first stage bbRepos.py, glRepos.py, and ghUpdatedRepos.py populate mongodb, which is then used to
 # get project list, while the rest populate project list into XXXX.$DT
 # all XXXX.$DT need to be copied to da cluster
@@ -9,18 +9,22 @@
 # second stage typically requires a much larger disk to store *.heads
 # all *.heads need to be copied to da cluster
 # Last Modified By: Luis Gonzalez Villalobos
-# Last Modified Date: 06/01/2024
+# Last Modified Date: 10/31/2024
 
 # GLOBALS
-DT=202406
-DTdash=2024-06-01
-PDT=202402
-PDTdash=2024-02-20
-# For GitLab go as far as:
-# PDT=202308
-# PDTdash=2023-08-30
+DT=202410
+DTdash=2024-10-31
+PDT=202406
+PDTdash=2024-06-01
 PT=$(date -d"$PDTdash" +%s)
 T=$(date -d"$DTdash" +%s)
+
+# Dir path to dump all collected data
+# Typically, all logs and head files would stay in the gather dir
+# This path is configurable so that we can direct log and headsfile a partition with enough space
+# MODIFY THIS - CURRENTLY TAILORED FOR EXOSPHERE MACHINE
+# /home/exouser/24q3 is a link to shared drive /media/volume/WoC-Data/discovery/24q3
+DATA_PATH="/home/exouser/24q3"
 
 # Test Remotes
 # done through ssh_config -> ~/.ssh/config
@@ -52,39 +56,41 @@ function github_discovery() {
   #    echo $(head -$i tokens|tail -1) $ptt $tt 
   # done > tokens_date
 
-  # Ran: token_date_01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17
-  # Next: done
-  for i in {1..6}; do (r=$(head -$i token_date_17|tail -1); echo $r | python3 ghUpdatedReposWithCount.py gh$DT repos  &> ghReposList$(echo $r | cut -d ' ' -f2).updt) & done
+  # Ran: token_date_01, 02
+  # Next: 03
+  for i in {1..6}; do (r=$(head -$i token_date_02|tail -1); echo $r | python3 ghUpdatedReposWithCount.py gh$DT repos  &> $DATA_PATH/ghReposList$(echo $r | cut -d ' ' -f2).updt) & done
 }
 
 function bitbucket_discovery() {
   # 2) BitBucket scrape
   # BB: need to extract all, no way to check for updated ones
-  python3 bbRepos.py 1980-01-01 bitbucket$DT 2013-00-01 &> bbRepos${DT}1.out &
-  python3 bbRepos.py 2013-01-01 bitbucket$DT 2014-05-03 &> bbRepos${DT}2.out &
-  python3 bbRepos.py 2014-05-03 bitbucket$DT 2015-05-03 &> bbRepos${DT}3.out &
-  python3 bbRepos.py 2015-05-03 bitbucket$DT 2016-05-03 &> bbRepos${DT}4.out &
-  python3 bbRepos.py 2016-05-03 bitbucket$DT 2017-05-03 &> bbRepos${DT}5.out &
-  python3 bbRepos.py 2017-05-03 bitbucket$DT 2018-05-03 &> bbRepos${DT}6.out &
-  python3 bbRepos.py 2018-05-03 bitbucket$DT 2019-05-03 &> bbRepos${DT}7.out &
-  python3 bbRepos.py 2019-05-03 bitbucket$DT 2020-05-01 &> bbRepos${DT}8.out &
-  python3 bbRepos.py 2020-05-03 bitbucket$DT 2021-05-01 &> bbRepos${DT}9.out &
-  python3 bbRepos.py 2021-05-01 bitbucket$DT 2022-05-03 &> bbRepos${DT}10.out &
-  python3 bbRepos.py 2022-05-03 bitbucket$DT 2023-05-03 &> bbRepos${DT}11.out &
-  python3 bbRepos.py 2023-05-03 bitbucket$DT 2024-05-03 &> bbRepos${DT}12.out &
-  # get only new, use heads for existing repos
-  python3 bbRepos.py 2024-05-03 bitbucket$DT 2025-05-03 &> bbRepos${DT}0.out &
+  # All these were last obtained on 24Q2 (during run2406.sh)
+  #python3 bbRepos.py 1980-01-01 bitbucket$DT 2013-00-01 &> $DATA_PATH/bbRepos${DT}1.out &
+  #python3 bbRepos.py 2013-01-01 bitbucket$DT 2014-05-03 &> $DATA_PATH/bbRepos${DT}2.out &
+  #python3 bbRepos.py 2014-05-03 bitbucket$DT 2015-05-03 &> $DATA_PATH/bbRepos${DT}3.out &
+  #python3 bbRepos.py 2015-05-03 bitbucket$DT 2016-05-03 &> $DATA_PATH/bbRepos${DT}4.out &
+  #python3 bbRepos.py 2016-05-03 bitbucket$DT 2017-05-03 &> $DATA_PATH/bbRepos${DT}5.out &
+  #python3 bbRepos.py 2017-05-03 bitbucket$DT 2018-05-03 &> $DATA_PATH/bbRepos${DT}6.out &
+  #python3 bbRepos.py 2018-05-03 bitbucket$DT 2019-05-03 &> $DATA_PATH/bbRepos${DT}7.out &
+  #python3 bbRepos.py 2019-05-03 bitbucket$DT 2020-05-01 &> $DATA_PATH/bbRepos${DT}8.out &
+  #python3 bbRepos.py 2020-05-03 bitbucket$DT 2021-05-01 &> $DATA_PATH/bbRepos${DT}9.out &
+  #python3 bbRepos.py 2021-05-01 bitbucket$DT 2022-05-03 &> $DATA_PATH/bbRepos${DT}10.out &
+  #python3 bbRepos.py 2022-05-03 bitbucket$DT 2023-05-03 &> $DATA_PATH/bbRepos${DT}11.out &
+  #python3 bbRepos.py 2023-05-03 bitbucket$DT 2024-05-03 &> $DATA_PATH/bbRepos${DT}12.out &
+
+  # Get only new, use heads for existing repos
+  python3 bbRepos.py 2024-05-03 bitbucket$DT 2025-05-03 &> $DATA_PATH/bbRepos${DT}0.out &
 }
 
 function sf_discovery() {
   # 3) SF scrape
   python3 sfRepos.py sf$DT repos 
-  python3 listU.py sf$DT repos '{}' url | sed "s|b'https://sourceforge.net/projects/||;s|'$||;" | sort -u > sf$DT.prj
+  python3 listU.py sf$DT repos '{}' url | sed "s|b'https://sourceforge.net/projects/||;s|'$||;" | sort -u > $DATA_PATH/sf$DT.prj
 }
 
 function gitlab_discovery() {
   # 4) Gitlab scrape
-  python3 glRepos.py 1 gl$DT repos &> gl$DT.out &
+  python3 glRepos.py 1 gl$DT repos &> $DATA_PATH/gl$DT.out &
 }
 
 function other_forges() {
@@ -414,7 +420,7 @@ function dump_mongo() {
 
 # Driver
 # test_remotes
-# github_discovery
+github_discovery
 # bitbucket_discovery
 # sf_discovery
 # gitlab_discovery # needs revisit but we captured some
@@ -428,6 +434,6 @@ function dump_mongo() {
 # wait
 # bb_heads
 # wait
-dump_mongo
+# dump_mongo
 exit 1
 
