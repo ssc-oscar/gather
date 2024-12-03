@@ -349,7 +349,8 @@ function sf_heads() {
 }
 
 function update_old_gh_repos() {
-  #get old repos for gh, these may have changed again
+  # get old repos for gh, these may have changed again
+  # Need to restore the previous db, use: mongorestore --host localhost:27017 --gzip -d gh$PDT <path_to_dump_files>/repos.bson.gz
   python3 listU.py gh$PDT repos '{}' nameWithOwner | sed "s|^b'||;s|'$||" | sort -u > $DATA_PATH/gh$PDT.u
   split -n l/50 -da2 $DATA_PATH/gh$PDT.u $DATA_PATH/gh$PDT.u.
   for j in {00..49}
@@ -419,7 +420,7 @@ function dump_mongo() {
 # github_discovery
 # bitbucket_discovery
 # sf_discovery
-gitlab_discovery # needs revisit but we captured some
+# gitlab_discovery # needs revisit but we captured some
 # other_forges
 # sf_heads
 # update_old_gh_repos
@@ -430,6 +431,6 @@ gitlab_discovery # needs revisit but we captured some
 # wait
 # bb_heads
 # wait
-# dump_mongo
+dump_mongo
 exit 1
 
